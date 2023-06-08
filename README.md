@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/astro-i18n-aut"><img src="https://img.shields.io/npm/dt/astro-i18n-aut.svg" alt="Total Downloads"></a>
   <a href="https://github.com/astro-i18n-aut/astro-i18n-aut/releases"><img src="https://img.shields.io/npm/v/astro-i18n-aut.svg" alt="Latest Release"></a>
-  <a href="https://github.com/astro-i18n-aut/astro-i18n-aut/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/astro-i18n-aut.svg" alt="License"></a>
+  <a href="https://github.com/jlarmstrongiv/astro-i18n-aut/blob/main/LICENSE.md"><img src="https://img.shields.io/npm/l/astro-i18n-aut.svg" alt="License"></a>
 </p>
 
 ---
