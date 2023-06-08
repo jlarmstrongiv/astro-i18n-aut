@@ -81,7 +81,7 @@ export default defineConfig({
 
 ### Usage
 
-Now that you have setup the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:
+Now that you have set up the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:
 
 - `/about.astro`
 - `/es/about.astro`
