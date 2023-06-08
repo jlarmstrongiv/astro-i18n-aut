@@ -4,11 +4,16 @@ import fg from "fast-glob";
 import fs from "fs-extra";
 import { logger } from "./logger/node";
 
+// TODO: defaultLocale redirects
+// - depends on https://github.com/withastro/astro/issues/7322
+// export type ValidRedirectStatus = 300 | 301 | 302 | 303 | 304 | 307 | 308;
+
 export interface I18nParameters {
   include?: string | string[];
   exclude?: string | string[];
   locales: Record<string, string>;
   defaultLocale: string;
+  // redirectStatus?: ValidRedirectStatus;
 }
 
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
@@ -19,7 +24,8 @@ export function i18n({
   exclude = ["pages/api/**"],
   locales,
   defaultLocale,
-}: I18nParameters): AstroIntegration {
+}: // redirectStatus,
+I18nParameters): AstroIntegration {
   ensureValidLocales(locales, defaultLocale);
 
   let pagesPathTmp: Record<string, string> = {};
