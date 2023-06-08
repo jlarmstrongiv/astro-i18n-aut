@@ -156,4 +156,4 @@ Astro does not easily support two pages having the same content:
 - Configured redirects do not support route transitions like `'/article': '/blog/[...slug]'`, only `'/blog/[...slug]': '/articles/[...slug]'`
 - The `injectRoute` method cannot inject an `entryPoint` that is already being used in the build command
 
-We duplicate the `src/pages` folder and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but that will be automatically cleaned on every started and completed build.
+We duplicate the `src/pages` folder and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but those will be automatically cleaned on every started and completed build.
