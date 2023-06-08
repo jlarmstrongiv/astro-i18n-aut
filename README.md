@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  Built with ❤️ for all Astro crewmates
+  Built with ❤️ for all Astro crewmates 🧑‍🚀
 </p>
 
 <p align="center">
