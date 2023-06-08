@@ -1,0 +1,19 @@
+{
+  "bumpVersion": "patch",
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":semanticCommitScopeDisabled",
+    ":semanticCommitTypeAll(renovate)",
+    ":disableRateLimiting",
+    ":prConcurrentLimitNone",
+    ":automergePatch",
+    ":automergeMinor",
+    ":automergeBranch"
+  ],
+  "ignorePresets": ["workarounds:typesNodeVersioning"],
+  "timezone": "America/New_York",
+  "schedule": ["after 8am", "before 10am"],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0
+}

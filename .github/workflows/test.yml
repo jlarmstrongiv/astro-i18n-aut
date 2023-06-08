@@ -1,0 +1,23 @@
+name: Test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repository 🛒
+        uses: actions/checkout@v3
+
+      - name: Setup Node ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.16.0"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies 🔧
+        # include devDependencies https://stackoverflow.com/a/64648870
+        run: npm ci --audit=false --include=dev --include=optional --include=peer
+
+      - name: Build package 🏗️
+        run: npm run build
