@@ -134,7 +134,7 @@ Other Astro page file types:
 - ❌ `.html`
 - ❌ `.js` / `.ts` (as endpoints)
 
-cannot be translated. If you choose to use them, please add them to the ignore glob patterns. For example, `["pages/api/**", "pages/**/*.md"]`
+cannot be translated. If you choose to use them, please add them to the ignore glob patterns. For example, `["pages/api/**/*", "pages/**/*.md"]`
 
 ## License
 
