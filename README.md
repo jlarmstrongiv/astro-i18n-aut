@@ -53,7 +53,7 @@ import sitemap from "@astrojs/sitemap";
 
 const defaultLocale = "en";
 const locales = {
-  en: "en-US", // The `defaultLocale` value must present in `locales` keys
+  en: "en-US", // the `defaultLocale` value must present in `locales` keys
   es: "es-ES",
   fr: "fr-CA",
 };
@@ -83,13 +83,17 @@ export default defineConfig({
 
 Now that you have set up the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:
 
-- `/about.astro`
-- `/es/about.astro`
-- `/fr/about.astro`
+- `/about`
+- `/es/about`
+- `/fr/about`
 
 Please note that the `getStaticPaths()` function will only run once. This limitation means that you cannot have translated urls, such as `/es/acerca-de` for `/about`. However, it also ensures compatibility with [`@astrojs/sitemap`](https://www.npmjs.com/package/@astrojs/sitemap).
 
-The Astro frontmatter is re-run for every translated page. For example, the `Astro.url.pathname` can be `/about`, `/es/about`, `/fr/about`.
+The Astro frontmatter and page content is re-run for every translated page. For example, the `Astro.url.pathname` will be:
+
+- `/about`
+- `/es/about`
+- `/fr/about`.
 
 It is up to you to detect which language is being rendered. You can use Astro [content collections](https://docs.astro.build/en/guides/content-collections/) or any i18n UI framework, such as [`react-i18next`](https://www.npmjs.com/package/react-i18next), for your translations. Here is a pure `Hello World` example:
 
@@ -120,7 +124,7 @@ switch (locale) {
 ### Options
 
 - `include`: glob pattern(s) to include (default: `["pages/**/*"]`)
-- `exclude`: glob pattern(s) to exclude (default: `["pages/api/**"]`)
+- `exclude`: glob pattern(s) to exclude (default: `["pages/api/**/*"]`)
 
 Other Astro page file types:
 

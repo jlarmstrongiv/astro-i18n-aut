@@ -9,9 +9,36 @@ import { logger } from "./logger/node";
 // export type ValidRedirectStatus = 300 | 301 | 302 | 303 | 304 | 307 | 308;
 
 export interface I18nParameters {
+  /**
+   * glob pattern(s) to include
+   * @defaultValue ["pages\/\*\*\/\*"]
+   */
   include?: string | string[];
+  /**
+   * glob pattern(s) to exclude
+   * @defaultValue ["pages\/api\/\*\*\/\*"]
+   */
   exclude?: string | string[];
+  /**
+   * all language locales
+   *
+   * @example
+   * ```ts
+   * const locales = {
+   *   en: "en-US", // the `defaultLocale` value must present in `locales` keys
+   *   es: "es-ES",
+   *   fr: "fr-CA",
+   * };
+   * ```
+   */
   locales: Record<string, string>;
+  /**
+   * the default language locale
+   *
+   * the `defaultLocale` value must present in `locales` keys
+   *
+   * @example "en"
+   */
   defaultLocale: string;
   // redirectStatus?: ValidRedirectStatus;
 }
@@ -19,9 +46,14 @@ export interface I18nParameters {
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
 // workaround: copy pages folder when command === "build"
 
+/**
+ * The i18n integration for Astro
+ *
+ * See the full [astro-i18n-aut](https://github.com/jlarmstrongiv/astro-i18n-aut#readme) documentation
+ */
 export function i18n({
   include = ["pages/**/*"],
-  exclude = ["pages/api/**"],
+  exclude = ["pages/api/**/*"],
   locales,
   defaultLocale,
 }: // redirectStatus,
