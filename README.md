@@ -93,7 +93,7 @@ The Astro frontmatter and page content is re-run for every translated page. For 
 
 - `/about`
 - `/es/about`
-- `/fr/about`.
+- `/fr/about`
 
 It is up to you to detect which language is being rendered. You can use Astro [content collections](https://docs.astro.build/en/guides/content-collections/) or any i18n UI framework, such as [`react-i18next`](https://www.npmjs.com/package/react-i18next), for your translations. Here is a pure `Hello World` example:
 
@@ -146,7 +146,7 @@ PRs welcome! Thank you for your contributions.
 
 ### The How
 
-Unfortunately, i18n is not a first-class concern for Astro. While Astro documents i18n in their [cookbook](https://docs.astro.build/en/recipes/i18n/), they do no support a `defaultLocale`.
+Unfortunately, i18n is not a first-class concern for Astro. While Astro documents i18n in their [cookbook](https://docs.astro.build/en/recipes/i18n/), they do not support a `defaultLocale`.
 
 The other community integrations that Astro links do not support all adapters:
 
