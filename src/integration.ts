@@ -1,7 +1,9 @@
 import path from "node:path";
+import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+
 import type { AstroConfig, AstroIntegration } from "astro";
 import fg from "fast-glob";
-import fs from "fs-extra";
 import { logger } from "./logger/node";
 
 // TODO: defaultLocale redirects
@@ -60,10 +62,12 @@ export function i18n({
 I18nParameters): AstroIntegration {
   ensureValidLocales(locales, defaultLocale);
 
-  let pagesPathTmp: Record<string, string> = {};
+  let pagesPathTmp: Record<string, URL> = {};
   async function removePagesPathTmp(): Promise<void> {
     await Promise.all(
-      Object.values(pagesPathTmp).map((pagePathTmp) => fs.remove(pagePathTmp))
+      Object.values(pagesPathTmp).map((pagePathTmp) =>
+        fs.rm(pagePathTmp, { recursive: true, force: true })
+      )
     );
   }
 
@@ -75,22 +79,25 @@ I18nParameters): AstroIntegration {
 
         let included: string[] = ensurePathsHaveConfigSrcDirPathname(
           typeof include === "string" ? [include] : include,
-          config.srcDir.pathname
+          config.srcDir
         );
         let excluded: string[] = ensurePathsHaveConfigSrcDirPathname(
           typeof exclude === "string" ? [exclude] : exclude,
-          config.srcDir.pathname
+          config.srcDir
         );
 
-        const pagesPath = path.join(config.srcDir.pathname, "pages");
+        const pagesPath = new URL("pages", config.srcDir);
 
-        const pagesPathTmpRoot = path.join(
-          config.srcDir.pathname,
+        const pagesPathTmpRoot = new URL(
           // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
-          "astro_tmp_pages"
+          "astro_tmp_pages",
+          config.srcDir
         );
         await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
-          pagesPathTmp[locale] = `${pagesPathTmpRoot}_${locale}`;
+          pagesPathTmp[locale] = new URL(
+            `${pagesPathTmpRoot.pathname}_${locale}`,
+            config.srcDir
+          );
         });
 
         if (command === "build") {
@@ -98,7 +105,12 @@ I18nParameters): AstroIntegration {
           await Promise.all(
             Object.keys(locales)
               .filter((locale) => locale !== defaultLocale)
-              .map((locale) => fs.copy(pagesPath, pagesPathTmp[locale]))
+              .map((locale) => {
+                return fs.cp(pagesPath, pagesPathTmp[locale], {
+                  recursive: true,
+                  force: true,
+                });
+              })
           );
         }
 
@@ -106,13 +118,12 @@ I18nParameters): AstroIntegration {
           ignore: excluded,
           onlyFiles: true,
         });
-        // typing https://stackoverflow.com/a/68358341
-        let entry: string;
-        // @ts-expect-error
-        for await (entry of entries) {
-          const parsedPath = path.parse(entry);
-          const relativePath = parsedPath.dir.replace(pagesPath, "");
-          const extname = parsedPath.ext.slice(1).toLowerCase();
+
+        for await (let entry of entries) {
+          const url = new URL(entry as string, config.srcDir);
+          const urlPath = fileURLToPath(url);
+          const extname = path.extname(url.pathname);
+          const relativePath = path.relative(pagesPath.pathname, urlPath);
 
           // warn on files that cannot be translated with specific and actionable warnings
           // astro pages file types https://docs.astro.build/en/core-concepts/astro-pages/#supported-page-files
@@ -120,25 +131,28 @@ I18nParameters): AstroIntegration {
           if (extname !== "astro") {
             warnIsInvalidPage(
               extname,
-              path.join(relativePath, parsedPath.base),
-              config.srcDir.pathname
+              path.join(relativePath, urlPath),
+              fileURLToPath(config.srcDir)
             );
+
             continue;
           }
 
           await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
             const entryPoint =
               command === "build"
-                ? path.join(pagesPathTmp[locale], relativePath, parsedPath.base)
-                : path.join(pagesPath, relativePath, parsedPath.base);
+                ? path.join(
+                    fileURLToPath(pagesPathTmp[locale]),
+                    relativePath,
+                    urlPath
+                  )
+                : urlPath;
 
             const pattern = path.join(
               config.base,
               locale,
               relativePath,
-              parsedPath.name.endsWith("index")
-                ? relativePath
-                : parsedPath.name,
+              urlPath.endsWith("index") ? relativePath : urlPath,
               config.build.format === "directory" ? "/" : ""
             );
 
@@ -197,14 +211,11 @@ function ensureValidConfig(config: AstroConfig) {
 
 function ensurePathsHaveConfigSrcDirPathname(
   filePaths: string[],
-  configSrcDirPathname: string
+  configSrcDir: URL
 ) {
-  return filePaths.map((filePath) => {
-    if (!filePath.includes(configSrcDirPathname)) {
-      return path.join(configSrcDirPathname, filePath);
-    }
-    return filePath;
-  });
+  return filePaths.map((filePath) =>
+    fileURLToPath(new URL(filePath, configSrcDir))
+  );
 }
 
 async function forEachNonDefaultLocale(
@@ -226,20 +237,20 @@ let hasWarnedIsInvalidPage = false;
 function warnIsInvalidPage(
   extname: string,
   filePath: string,
-  configSrcDirPathname: string
+  configSrcDirPath: string
 ): boolean {
   // astro pages file types https://docs.astro.build/en/core-concepts/astro-pages/#supported-page-files
   if (["js", "ts", "md", "mdx", "html"].includes(extname)) {
     if (hasWarnedIsInvalidPage === false) {
       logger.warn(
         "astro-i18n-aut",
-        `exclude or remove non-astro files from "${configSrcDirPathname}pages", as they cannot be translated`
+        `exclude or remove non-astro files from "${configSrcDirPath}pages", as they cannot be translated`
       );
       hasWarnedIsInvalidPage = true;
     }
     logger.warn(
       "astro-i18n-aut",
-      path.join(configSrcDirPathname, "pages", filePath)
+      path.join(configSrcDirPath, "pages", filePath)
     );
     return true;
   }
