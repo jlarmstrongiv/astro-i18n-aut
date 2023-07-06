@@ -86,7 +86,7 @@ I18nParameters): AstroIntegration {
           config.srcDir
         );
 
-        const pagesPath = new URL("pages", config.srcDir);
+        const pagesPath = new URL("./pages", config.srcDir);
 
         const pagesPathTmpRoot = new URL(
           // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
@@ -95,7 +95,7 @@ I18nParameters): AstroIntegration {
         );
         await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
           pagesPathTmp[locale] = new URL(
-            `${pagesPathTmpRoot.pathname}_${locale}`,
+            `${fileURLToPath(pagesPathTmpRoot)}_${locale}`,
             config.srcDir
           );
         });
@@ -120,10 +120,12 @@ I18nParameters): AstroIntegration {
         });
 
         for await (let entry of entries) {
-          const url = new URL(entry as string, config.srcDir);
-          const urlPath = fileURLToPath(url);
-          const extname = path.extname(url.pathname);
-          const relativePath = path.relative(pagesPath.pathname, urlPath);
+          const parsedPath = path.parse(entry as string);
+          const relativePath = path.relative(
+            fileURLToPath(pagesPath),
+            parsedPath.dir
+          );
+          const extname = parsedPath.ext.slice(1).toLowerCase();
 
           // warn on files that cannot be translated with specific and actionable warnings
           // astro pages file types https://docs.astro.build/en/core-concepts/astro-pages/#supported-page-files
@@ -131,7 +133,7 @@ I18nParameters): AstroIntegration {
           if (extname !== "astro") {
             warnIsInvalidPage(
               extname,
-              path.join(relativePath, urlPath),
+              path.join(relativePath, parsedPath.base),
               fileURLToPath(config.srcDir)
             );
 
@@ -144,16 +146,19 @@ I18nParameters): AstroIntegration {
                 ? path.join(
                     fileURLToPath(pagesPathTmp[locale]),
                     relativePath,
-                    urlPath
+                    parsedPath.base
                   )
-                : urlPath;
+                : path.join(
+                    fileURLToPath(pagesPath),
+                    relativePath,
+                    parsedPath.base
+                  );
 
             const pattern = path.join(
               config.base,
               locale,
               relativePath,
-              urlPath.endsWith("index") ? relativePath : urlPath,
-              config.build.format === "directory" ? "/" : ""
+              parsedPath.name.endsWith("index") ? relativePath : parsedPath.name
             );
 
             injectRoute({
