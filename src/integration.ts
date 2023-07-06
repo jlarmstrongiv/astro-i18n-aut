@@ -88,14 +88,10 @@ I18nParameters): AstroIntegration {
 
         const pagesPath = new URL("./pages", config.srcDir);
 
-        const pagesPathTmpRoot = new URL(
-          // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
-          "astro_tmp_pages",
-          config.srcDir
-        );
         await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
           pagesPathTmp[locale] = new URL(
-            `${fileURLToPath(pagesPathTmpRoot)}_${locale}`,
+            // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
+            `astro_tmp_pages_${locale}`,
             config.srcDir
           );
         });
@@ -154,17 +150,18 @@ I18nParameters): AstroIntegration {
                     parsedPath.base
                   );
 
-            const pattern = path.join(
-              config.base,
-              locale,
-              relativePath,
-              parsedPath.name.endsWith("index") ? relativePath : parsedPath.name
-            );
+            const pattern = path
+              .join(
+                config.base,
+                locale,
+                relativePath,
+                parsedPath.name.endsWith("index")
+                  ? relativePath
+                  : parsedPath.name
+              )
+              .replaceAll("\\", "/");
 
-            injectRoute({
-              entryPoint,
-              pattern,
-            });
+            injectRoute({ entryPoint, pattern });
           });
         }
       },
@@ -219,7 +216,7 @@ function ensurePathsHaveConfigSrcDirPathname(
   configSrcDir: URL
 ) {
   return filePaths.map((filePath) =>
-    fileURLToPath(new URL(filePath, configSrcDir))
+    fg.convertPathToPattern(fileURLToPath(new URL(filePath, configSrcDir)))
   );
 }
 
