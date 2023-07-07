@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import type { AstroConfig, AstroIntegration } from "astro";
 import fg from "fast-glob";
 import { logger } from "./logger/node";
+import { removeLeadingForwardSlashWindows } from "./internal-helpers/path";
 
 // TODO: defaultLocale redirects
 // - depends on https://github.com/withastro/astro/issues/7322
@@ -74,20 +75,23 @@ I18nParameters): AstroIntegration {
     hooks: {
       "astro:config:setup": async ({ config, command, injectRoute }) => {
         ensureValidConfig(config);
+        const configSrcDirPathname = removeLeadingForwardSlashWindows(
+          config.srcDir.pathname
+        );
 
         let included: string[] = ensurePathsHaveConfigSrcDirPathname(
           typeof include === "string" ? [include] : include,
-          config.srcDir.pathname
+          configSrcDirPathname
         );
         let excluded: string[] = ensurePathsHaveConfigSrcDirPathname(
           typeof exclude === "string" ? [exclude] : exclude,
-          config.srcDir.pathname
+          configSrcDirPathname
         );
 
-        const pagesPath = path.join(config.srcDir.pathname, "pages");
+        const pagesPath = path.join(configSrcDirPathname, "pages");
 
         const pagesPathTmpRoot = path.join(
-          config.srcDir.pathname,
+          configSrcDirPathname,
           // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
           "astro_tmp_pages"
         );
@@ -128,7 +132,7 @@ I18nParameters): AstroIntegration {
             warnIsInvalidPage(
               extname,
               path.join(relativePath, parsedPath.base),
-              config.srcDir.pathname
+              configSrcDirPathname
             );
             continue;
           }
