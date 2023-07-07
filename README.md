@@ -125,9 +125,10 @@ It is up to you to detect which language is being rendered. You can use Astro [c
 
 ```astro
 ---
+import { getLocale } from "astro-i18n-aut";
 import Layout from "../layouts/Layout.astro";
 
-const locale = Astro.url.pathname.slice(1, 3);
+const locale = getLocale(Astro.url);
 
 let title: string;
 switch (locale) {
