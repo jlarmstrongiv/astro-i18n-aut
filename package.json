@@ -44,7 +44,7 @@
     "watch": "tsup-node --watch"
   },
   "dependencies": {
-    "fast-glob": "^3.2.12"
+    "fast-glob": "^3.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.2.5",
