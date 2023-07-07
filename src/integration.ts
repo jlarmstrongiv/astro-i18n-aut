@@ -1,7 +1,7 @@
 import path from "node:path";
+import fs from "node:fs/promises";
 import type { AstroConfig, AstroIntegration } from "astro";
 import fg from "fast-glob";
-import fs from "fs-extra";
 import { logger } from "./logger/node";
 
 // TODO: defaultLocale redirects
@@ -63,7 +63,9 @@ I18nParameters): AstroIntegration {
   let pagesPathTmp: Record<string, string> = {};
   async function removePagesPathTmp(): Promise<void> {
     await Promise.all(
-      Object.values(pagesPathTmp).map((pagePathTmp) => fs.remove(pagePathTmp))
+      Object.values(pagesPathTmp).map((pagePathTmp) =>
+        fs.rm(pagePathTmp, { recursive: true, force: true })
+      )
     );
   }
 
@@ -98,7 +100,12 @@ I18nParameters): AstroIntegration {
           await Promise.all(
             Object.keys(locales)
               .filter((locale) => locale !== defaultLocale)
-              .map((locale) => fs.copy(pagesPath, pagesPathTmp[locale]))
+              .map((locale) =>
+                fs.cp(pagesPath, pagesPathTmp[locale], {
+                  recursive: true,
+                  force: true,
+                })
+              )
           );
         }
 
