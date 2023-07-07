@@ -315,6 +315,7 @@ function ensureGlobsHaveConfigSrcDirPathname(
       filePath = path.relative(configSrcDirPathname, filePath);
     }
 
+    // fast-glob prefers unix paths https://www.npmjs.com/package/fast-glob#how-to-write-patterns-on-windows
     filePath = path.posix.join(
       fg.convertPathToPattern(configSrcDirPathname),
       slash(filePath)
