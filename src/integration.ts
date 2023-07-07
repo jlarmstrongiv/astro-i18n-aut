@@ -1,15 +1,13 @@
 import path from "node:path";
-import fs from "node:fs/promises";
-import type { AstroConfig, AstroIntegration } from "astro";
+import type { AstroConfig, AstroIntegration, ValidRedirectStatus } from "astro";
+import dedent from "dedent";
 import fg from "fast-glob";
+import fs from "fs-extra";
+import slash from "slash";
 import { logger } from "./logger/node";
 import { removeLeadingForwardSlashWindows } from "./internal-helpers/path";
 
-// TODO: defaultLocale redirects
-// - depends on https://github.com/withastro/astro/issues/7322
-// export type ValidRedirectStatus = 300 | 301 | 302 | 303 | 304 | 307 | 308;
-
-export interface I18nParameters {
+export interface UserI18nConfig {
   /**
    * glob pattern(s) to include
    * @defaultValue ["pages\/\*\*\/\*"]
@@ -41,8 +39,37 @@ export interface I18nParameters {
    * @example "en"
    */
   defaultLocale: string;
-  // redirectStatus?: ValidRedirectStatus;
+  /**
+   * given the defaultLocale "en", whether
+   * "/en/about" redirects to "/about"
+   *
+   * whether the url with the default locale
+   * should redirect to the url without the locale
+   *
+   * if a status is given, such as 302,
+   * redirectDefaultLocale will be truthy,
+   * and all redirects will use that status
+   *
+   * @defaultValue true
+   */
+  redirectDefaultLocale?: boolean | ValidRedirectStatus;
 }
+
+type I18nConfig = Required<UserI18nConfig>;
+
+// opposite of RequiredFieldsOnly https://stackoverflow.com/a/68261391
+type PartialFieldsOnly<T> = {
+  [K in keyof T as T[K] extends Required<T>[K] ? never : K]: T[K];
+};
+
+/**
+ * The default values for I18nConfig
+ */
+export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
+  include: ["pages/**/*"],
+  exclude: ["pages/api/**/*"],
+  redirectDefaultLocale: true,
+};
 
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
 // workaround: copy pages folder when command === "build"
@@ -52,21 +79,21 @@ export interface I18nParameters {
  *
  * See the full [astro-i18n-aut](https://github.com/jlarmstrongiv/astro-i18n-aut#readme) documentation
  */
-export function i18n({
-  include = ["pages/**/*"],
-  exclude = ["pages/api/**/*"],
-  locales,
-  defaultLocale,
-}: // redirectStatus,
-I18nParameters): AstroIntegration {
+export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
+  const i18nConfig: I18nConfig = Object.assign(
+    defaultI18nConfig,
+    userI18nConfig
+  );
+
+  const { defaultLocale, locales, exclude, include, redirectDefaultLocale } =
+    i18nConfig;
+
   ensureValidLocales(locales, defaultLocale);
 
   let pagesPathTmp: Record<string, string> = {};
   async function removePagesPathTmp(): Promise<void> {
     await Promise.all(
-      Object.values(pagesPathTmp).map((pagePathTmp) =>
-        fs.rm(pagePathTmp, { recursive: true, force: true })
-      )
+      Object.values(pagesPathTmp).map((pagePathTmp) => fs.remove(pagePathTmp))
     );
   }
 
@@ -74,16 +101,16 @@ I18nParameters): AstroIntegration {
     name: "astro-i18n-integration",
     hooks: {
       "astro:config:setup": async ({ config, command, injectRoute }) => {
-        ensureValidConfig(config);
-        const configSrcDirPathname = removeLeadingForwardSlashWindows(
-          config.srcDir.pathname
+        await ensureValidConfigs(config, i18nConfig);
+        const configSrcDirPathname = path.normalize(
+          removeLeadingForwardSlashWindows(config.srcDir.pathname)
         );
 
-        let included: string[] = ensurePathsHaveConfigSrcDirPathname(
+        let included: string[] = ensureGlobsHaveConfigSrcDirPathname(
           typeof include === "string" ? [include] : include,
           configSrcDirPathname
         );
-        let excluded: string[] = ensurePathsHaveConfigSrcDirPathname(
+        let excluded: string[] = ensureGlobsHaveConfigSrcDirPathname(
           typeof exclude === "string" ? [exclude] : exclude,
           configSrcDirPathname
         );
@@ -95,21 +122,22 @@ I18nParameters): AstroIntegration {
           // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
           "astro_tmp_pages"
         );
-        await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
+        for (const locale of Object.keys(locales)) {
           pagesPathTmp[locale] = `${pagesPathTmpRoot}_${locale}`;
-        });
+        }
 
         if (command === "build") {
           await removePagesPathTmp();
           await Promise.all(
             Object.keys(locales)
-              .filter((locale) => locale !== defaultLocale)
-              .map((locale) =>
-                fs.cp(pagesPath, pagesPathTmp[locale], {
-                  recursive: true,
-                  force: true,
-                })
-              )
+              .filter((locale) => {
+                if (redirectDefaultLocale === false) {
+                  return locale !== defaultLocale;
+                } else {
+                  return true;
+                }
+              })
+              .map((locale) => fs.copy(pagesPath, pagesPathTmp[locale]))
           );
         }
 
@@ -137,14 +165,19 @@ I18nParameters): AstroIntegration {
             continue;
           }
 
-          await forEachNonDefaultLocale(locales, defaultLocale, (locale) => {
+          for (const locale of Object.keys(locales)) {
+            // ignore defaultLocale if redirectDefaultLocale is false
+            if (redirectDefaultLocale === false && locale === defaultLocale) {
+              continue;
+            }
+
             const entryPoint =
               command === "build"
                 ? path.join(pagesPathTmp[locale], relativePath, parsedPath.base)
                 : path.join(pagesPath, relativePath, parsedPath.base);
 
-            const pattern = path
-              .join(
+            const pattern = slash(
+              path.join(
                 config.base,
                 locale,
                 relativePath,
@@ -153,16 +186,13 @@ I18nParameters): AstroIntegration {
                   : parsedPath.name,
                 config.build.format === "directory" ? "/" : ""
               )
-              // injectRoute errors with windows slashes
-              // - https://stackoverflow.com/a/60395362
-              // - https://github.com/sindresorhus/slash
-              .replaceAll("\\", "/");
+            );
 
             injectRoute({
               entryPoint,
               pattern,
             });
-          });
+          }
         }
       },
       "astro:build:done": async () => {
@@ -188,7 +218,7 @@ function ensureValidLocales(
   }
 }
 
-function ensureValidConfig(config: AstroConfig) {
+async function ensureValidConfigs(config: AstroConfig, i18nConfig: I18nConfig) {
   if (config.trailingSlash === "ignore" && config.output === "static") {
     logger.warn(
       "astro-i18n-aut",
@@ -202,40 +232,96 @@ function ensureValidConfig(config: AstroConfig) {
       "astro-i18n-aut",
       `config.trailingSlash = "never" && config.build.format = "file"`
     );
-    config.trailingSlash =
-      config.build.format === "directory" ? "always" : "never";
     logger.warn(
       "astro-i18n-aut",
       `setting config.trailingSlash = "${config.trailingSlash}"`
     );
+    config.trailingSlash =
+      config.build.format === "directory" ? "always" : "never";
+  }
+
+  // use @ts-ignore to avoid errors when
+  // redirects is no longer experimental
+  if (
+    // @ts-ignore
+    config.experimental.redirects === false &&
+    i18nConfig.redirectDefaultLocale !== false
+  ) {
+    logger.warn(
+      "astro-i18n-aut",
+      `setting config.experimental.redirects = true`
+    );
+    // avoids error from https://web.archive.org/web/20230707092911/https://github.com/withastro/astro/blob/main/packages/astro/src/core/endpoint/index.ts
+    // @ts-ignore
+    config.experimental.redirects = true;
+  }
+
+  if (i18nConfig.redirectDefaultLocale) {
+    const configSrcDirPathname = path.normalize(
+      removeLeadingForwardSlashWindows(config.srcDir.pathname)
+    );
+
+    // all possible locations of middleware
+    const defaultMiddlewarePath = path.join(
+      configSrcDirPathname,
+      "middleware/index.ts"
+    );
+    const middlewarePaths = [
+      path.join(configSrcDirPathname, "middleware.js"),
+      path.join(configSrcDirPathname, "middleware.ts"),
+      path.join(configSrcDirPathname, "middleware/index.js"),
+      defaultMiddlewarePath,
+    ];
+
+    // check if middleware exists
+    const pathsExist = await Promise.all(
+      middlewarePaths.map((middlewarePath) => fs.exists(middlewarePath))
+    );
+    const pathExists = pathsExist.includes(true);
+
+    // warn and create middleware if it does not exist
+    if (pathExists === false) {
+      logger.warn("astro-i18n-aut", `cannot find any Astro middleware files:`);
+      middlewarePaths.forEach((middlewarePath) => {
+        logger.warn("astro-i18n-aut", `- ${middlewarePath}`);
+      });
+      logger.warn(
+        "astro-i18n-aut",
+        `creating ${defaultMiddlewarePath} with defaultLocale = "en"`
+      );
+      await fs.outputFile(
+        defaultMiddlewarePath,
+        dedent(`
+          import { sequence } from "astro/middleware";
+          import { i18nMiddleware } from "astro-i18n-aut";
+
+          const i18n = i18nMiddleware({ defaultLocale: "en" });
+
+          export const onRequest = sequence(i18n);
+        `)
+      );
+    }
   }
 }
 
-function ensurePathsHaveConfigSrcDirPathname(
+function ensureGlobsHaveConfigSrcDirPathname(
   filePaths: string[],
   configSrcDirPathname: string
 ) {
   return filePaths.map((filePath) => {
-    if (!filePath.includes(configSrcDirPathname)) {
-      return fg.convertPathToPattern(path.join(configSrcDirPathname, filePath));
-    }
-    return fg.convertPathToPattern(filePath);
-  });
-}
+    filePath = path.normalize(removeLeadingForwardSlashWindows(filePath));
 
-async function forEachNonDefaultLocale(
-  locales: Record<string, string>,
-  defaultLocale: string,
-  asyncFunction: (locale: string) => Promise<void> | void
-) {
-  for (const locale of Object.keys(locales)) {
-    // by default, astro handles the defaultLocale
-    if (locale === defaultLocale) {
-      continue;
+    if (filePath.includes(configSrcDirPathname)) {
+      filePath = path.relative(configSrcDirPathname, filePath);
     }
-    // we handle the other locale pages
-    await asyncFunction(locale);
-  }
+
+    filePath = path.posix.join(
+      fg.convertPathToPattern(configSrcDirPathname),
+      slash(filePath)
+    );
+
+    return filePath;
+  });
 }
 
 let hasWarnedIsInvalidPage = false;

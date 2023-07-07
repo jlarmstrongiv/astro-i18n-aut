@@ -60,6 +60,9 @@ const locales = {
 };
 
 export default defineConfig({
+  experimental: {
+    redirects: true,
+  },
   site: "https://example.com",
   trailingSlash: "always",
   build: {
@@ -80,6 +83,23 @@ export default defineConfig({
 });
 ```
 
+In your Astro [middleware](https://docs.astro.build/en/guides/middleware/#chaining-middleware) file:
+
+```ts
+import { sequence } from "astro/middleware";
+import { i18nMiddleware } from "astro-i18n-aut";
+
+const i18n = i18nMiddleware({ defaultLocale: "en" });
+
+export const onRequest = sequence(i18n);
+```
+
+In your `.gitignore` file:
+
+```gitignore
+astro_tmp_pages_*
+```
+
 ### Usage
 
 Now that you have set up the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:
@@ -87,6 +107,10 @@ Now that you have set up the config, each `.astro` page will have additional ren
 - `/about`
 - `/es/about`
 - `/fr/about`
+
+If you have enabled `redirectDefaultLocale` (`true` by default) and have setup the `i18nMiddleware`, redirects will be:
+
+- `/en/about` => `/about`
 
 Please note that the `getStaticPaths()` function will only run once. This limitation means that you cannot have translated urls, such as `/es/acerca-de` for `/about`. However, it also ensures compatibility with [`@astrojs/sitemap`](https://www.npmjs.com/package/@astrojs/sitemap).
 
@@ -162,3 +186,5 @@ Astro does not easily support two pages having the same content:
 - The `injectRoute` method cannot inject an `entryPoint` that is already being used in the build command
 
 We duplicate the `src/pages` folder multiple times and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but those will be automatically cleaned on every started and completed build.
+
+Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects-experimental) for non-existent routes, so middleware must be used with `src/astro_tmp_pages_DEFAULTLOCALE` to create redirects.
