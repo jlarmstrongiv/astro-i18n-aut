@@ -48,8 +48,8 @@ npm install astro-i18n-aut
 In your Astro [config](https://docs.astro.build/en/guides/configuring-astro/#supported-config-file-types) file:
 
 ```ts
-import { defineConfig, defaultLocaleSitemapFilter } from "astro/config";
-import i18n from "astro-i18n-aut";
+import { defineConfig } from "astro/config";
+import { i18n, defaultLocaleSitemapFilter } from "astro-i18n-aut";
 import sitemap from "@astrojs/sitemap";
 
 const defaultLocale = "en";
