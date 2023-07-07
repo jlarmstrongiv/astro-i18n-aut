@@ -122,7 +122,7 @@ I18nParameters): AstroIntegration {
         // @ts-expect-error
         for await (entry of entries) {
           const parsedPath = path.parse(entry);
-          const relativePath = parsedPath.dir.replace(pagesPath, "");
+          const relativePath = path.relative(pagesPath, parsedPath.dir);
           const extname = parsedPath.ext.slice(1).toLowerCase();
 
           // warn on files that cannot be translated with specific and actionable warnings
@@ -143,15 +143,20 @@ I18nParameters): AstroIntegration {
                 ? path.join(pagesPathTmp[locale], relativePath, parsedPath.base)
                 : path.join(pagesPath, relativePath, parsedPath.base);
 
-            const pattern = path.join(
-              config.base,
-              locale,
-              relativePath,
-              parsedPath.name.endsWith("index")
-                ? relativePath
-                : parsedPath.name,
-              config.build.format === "directory" ? "/" : ""
-            );
+            const pattern = path
+              .join(
+                config.base,
+                locale,
+                relativePath,
+                parsedPath.name.endsWith("index")
+                  ? relativePath
+                  : parsedPath.name,
+                config.build.format === "directory" ? "/" : ""
+              )
+              // injectRoute errors with windows slashes
+              // - https://stackoverflow.com/a/60395362
+              // - https://github.com/sindresorhus/slash
+              .replaceAll("\\", "/");
 
             injectRoute({
               entryPoint,
