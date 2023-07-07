@@ -109,7 +109,7 @@ Now that you have set up the config, each `.astro` page will have additional ren
 - `/es/about`
 - `/fr/about`
 
-If you have enabled `redirectDefaultLocale` (`true` by default) and have setup the `i18nMiddleware`, redirects will be:
+If you have enabled `redirectDefaultLocale` (`true` by default) in the integration and middleware, redirects will be:
 
 - `/en/about` => `/about`
 
