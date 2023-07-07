@@ -212,9 +212,9 @@ function ensurePathsHaveConfigSrcDirPathname(
 ) {
   return filePaths.map((filePath) => {
     if (!filePath.includes(configSrcDirPathname)) {
-      return path.join(configSrcDirPathname, filePath);
+      return fg.convertPathToPattern(path.join(configSrcDirPathname, filePath));
     }
-    return filePath;
+    return fg.convertPathToPattern(filePath);
   });
 }
 
