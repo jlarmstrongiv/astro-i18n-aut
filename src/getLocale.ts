@@ -10,6 +10,6 @@ export function getLocale(url: URL): string | undefined {
     // catch all "/fr/**/*" urls
     return url.pathname.slice(1, 3);
   }
-  // otherwise, it must be a defaultLocale
+  // otherwise, it must be a defaultLocale or other url
   return undefined;
 }

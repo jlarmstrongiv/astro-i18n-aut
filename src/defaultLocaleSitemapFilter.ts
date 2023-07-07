@@ -1,14 +1,9 @@
-import type { UserI18nConfig } from "./integration";
-
-export type UserDefaultLocaleSitemapFilter = Pick<
-  UserI18nConfig,
-  "defaultLocale"
->;
+import type { UserDefaultLocaleSitemapFilterConfig } from "./configs";
 
 // sitemap filter https://docs.astro.build/en/guides/integrations-guide/sitemap/#filter
 export function defaultLocaleSitemapFilter({
   defaultLocale,
-}: UserDefaultLocaleSitemapFilter) {
+}: UserDefaultLocaleSitemapFilterConfig) {
   return function filter(page: string) {
     const pagePathname = new URL(page).pathname;
     return (

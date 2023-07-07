@@ -1,75 +1,13 @@
 import path from "node:path";
-import type { AstroConfig, AstroIntegration, ValidRedirectStatus } from "astro";
+import type { AstroConfig, AstroIntegration } from "astro";
 import dedent from "dedent";
 import fg from "fast-glob";
 import fs from "fs-extra";
 import slash from "slash";
 import { logger } from "./logger/node";
 import { removeLeadingForwardSlashWindows } from "./internal-helpers/path";
-
-export interface UserI18nConfig {
-  /**
-   * glob pattern(s) to include
-   * @defaultValue ["pages\/\*\*\/\*"]
-   */
-  include?: string | string[];
-  /**
-   * glob pattern(s) to exclude
-   * @defaultValue ["pages\/api\/\*\*\/\*"]
-   */
-  exclude?: string | string[];
-  /**
-   * all language locales
-   *
-   * @example
-   * ```ts
-   * const locales = {
-   *   en: "en-US", // the `defaultLocale` value must present in `locales` keys
-   *   es: "es-ES",
-   *   fr: "fr-CA",
-   * };
-   * ```
-   */
-  locales: Record<string, string>;
-  /**
-   * the default language locale
-   *
-   * the `defaultLocale` value must present in `locales` keys
-   *
-   * @example "en"
-   */
-  defaultLocale: string;
-  /**
-   * given the defaultLocale "en", whether
-   * "/en/about" redirects to "/about"
-   *
-   * whether the url with the default locale
-   * should redirect to the url without the locale
-   *
-   * if a status is given, such as 302,
-   * redirectDefaultLocale will be truthy,
-   * and all redirects will use that status
-   *
-   * @defaultValue true
-   */
-  redirectDefaultLocale?: boolean | ValidRedirectStatus;
-}
-
-type I18nConfig = Required<UserI18nConfig>;
-
-// opposite of RequiredFieldsOnly https://stackoverflow.com/a/68261391
-type PartialFieldsOnly<T> = {
-  [K in keyof T as T[K] extends Required<T>[K] ? never : K]: T[K];
-};
-
-/**
- * The default values for I18nConfig
- */
-export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
-  include: ["pages/**/*"],
-  exclude: ["pages/api/**/*"],
-  redirectDefaultLocale: true,
-};
+import { defaultI18nConfig } from "./configs";
+import type { UserI18nConfig, I18nConfig } from "./configs";
 
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
 // workaround: copy pages folder when command === "build"
