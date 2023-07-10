@@ -229,14 +229,14 @@ async function ensureValidConfigs(config: AstroConfig, i18nConfig: I18nConfig) {
       );
       await fs.outputFile(
         defaultMiddlewarePath,
-        dedent(`
+        dedent`
           import { sequence } from "astro/middleware";
           import { i18nMiddleware } from "astro-i18n-aut";
 
           const i18n = i18nMiddleware({ defaultLocale: "en" });
 
           export const onRequest = sequence(i18n);
-        `)
+        `
       );
     }
   }
