@@ -161,7 +161,46 @@ Other Astro page file types:
 - ❌ `.html`
 - ❌ `.js` / `.ts` (as endpoints)
 
-cannot be translated. If you choose to use them, please add them to the ignore glob patterns. For example, `["pages/api/**/*", "pages/**/*.md"]`
+cannot be translated. If you choose to use them in the `pages` directory, please add them to the ignore glob patterns. For example, `["pages/api/**/*", "pages/**/*.md"]`
+
+#### Markdown
+
+For `.md` and `.mdx`, use Astro [Content](https://docs.astro.build/en/guides/content-collections/#organizing-with-subdirectories) [Collections](https://docs.astro.build/en/recipes/i18n/#use-collections-for-translated-content).
+
+With this library and Astro Content Collections, you can keep your Markdown separate and organized in `content`, while using `pages/blog/index.astro` and `pages/blog/[slug].astro` to render all of your content (even with a `defaultLocale`!). Here is an example folder structure:
+
+```
+.
+└── astro-project/
+    └── src/
+        ├── pages/
+        │   └── blog/
+        │       ├── index.astro
+        │       └── [id].astro
+        └── content/
+            └── blog/
+                ├── en/
+                │   ├── post-1.md
+                │   └── post-2.md
+                ├── es/
+                │   ├── post-1.md
+                │   └── post-2.md
+                └── fr/
+                    ├── post-1.md
+                    └── post-2.md
+```
+
+#### UI frameworks
+
+Astro does not support `.tsx` or `.jsx` as page file types.
+
+For UI frameworks like React and Vue, use them how you [normally](https://docs.astro.build/en/core-concepts/framework-components/) would with Astro by importing them as components.
+
+#### Endpoints
+
+By default, all pages in `pages/api/**/*` are ignored.
+
+For `.ts` and `.js` endpoints, how you handle multiple locales is up to you. As endpoints are not user-facing and there are many different ways to use endpoints, we leave the implementation up to your preferences.
 
 ## License
 
