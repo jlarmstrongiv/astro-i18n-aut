@@ -46,13 +46,13 @@
   "dependencies": {
     "dedent": "^1.0.1",
     "fast-glob": "^3.3.0",
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "slash": "^5.1.0"
   },
   "devDependencies": {
     "@types/dedent": "^0.7.0",
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^20.2.5",
-    "slash": "^5.1.0",
     "tsup": "^7.0.0",
     "typescript": "^5.1.3"
   },
