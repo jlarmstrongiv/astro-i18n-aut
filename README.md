@@ -167,7 +167,7 @@ cannot be translated. If you choose to use them in the `pages` directory, please
 
 For `.md` and `.mdx`, use Astro [Content](https://docs.astro.build/en/guides/content-collections/#organizing-with-subdirectories) [Collections](https://docs.astro.build/en/recipes/i18n/#use-collections-for-translated-content).
 
-With this library and Astro Content Collections, you can keep your Markdown separate and organized in `content`, while using `pages/blog/index.astro` and `pages/blog/[slug].astro` to render all of your content (even with a `defaultLocale`!). Here is an example folder structure:
+With this library and Astro Content Collections, you can keep your Markdown separate and organized in `content`, while using `pages/blog/index.astro` and `pages/blog/[slug].astro` to render all of your content, even with a `defaultLocale`! Here is an example folder structure:
 
 ```
 .
@@ -195,6 +195,8 @@ With this library and Astro Content Collections, you can keep your Markdown sepa
 Astro does not support `.tsx` or `.jsx` as page file types.
 
 For UI frameworks like React and Vue, use them how you [normally](https://docs.astro.build/en/core-concepts/framework-components/) would with Astro by importing them as components.
+
+Feel free to pass the translated content (`title={t('title')}`) or locale (`locale={locale}`) as props.
 
 #### Endpoints
 
