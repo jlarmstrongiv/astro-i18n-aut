@@ -1,7 +1,7 @@
 /**
  * @returns locale prefix "/es" or "" if defaultLocale
  */
-export function getLocalePrefix(url: URL): string {
+export function getLocaleUrlPrefix(url: URL): string {
   // avoid catching urls that start with "/en" like "/enigma"
   if (url.pathname.length === 3) {
     return url.pathname;
