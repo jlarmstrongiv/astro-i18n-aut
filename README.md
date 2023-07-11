@@ -63,7 +63,7 @@ export default defineConfig({
   experimental: {
     redirects: true,
   },
-  site: "https://example.com",
+  site: "https://example.com/",
   trailingSlash: "always",
   build: {
     format: "directory",
@@ -105,21 +105,21 @@ astro_tmp_pages_*
 
 Now that you have set up the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:
 
-- `/about`
-- `/es/about`
-- `/fr/about`
+- `/about/`
+- `/es/about/`
+- `/fr/about/`
 
 If you have enabled `redirectDefaultLocale` (`true` by default) in the integration and middleware, redirects will be:
 
-- `/en/about` => `/about`
+- `/en/about/` => `/about/`
 
-Please note that the `getStaticPaths()` function will only run once. This limitation means that you cannot have translated urls, such as `/es/acerca-de` for `/about`. However, it also ensures compatibility with [`@astrojs/sitemap`](https://www.npmjs.com/package/@astrojs/sitemap).
+Please note that the `getStaticPaths()` function will only run once. This limitation means that you cannot have translated urls, such as `/es/acerca-de/` for `/about/`. However, it also ensures compatibility with [`@astrojs/sitemap`](https://www.npmjs.com/package/@astrojs/sitemap).
 
 The Astro frontmatter and page content is re-run for every translated page. For example, the `Astro.url.pathname` will be:
 
-- `/about`
-- `/es/about`
-- `/fr/about`
+- `/about/`
+- `/es/about/`
+- `/fr/about/`
 
 It is up to you to detect which language is being rendered. You can use Astro [content collections](https://docs.astro.build/en/guides/content-collections/) or any i18n UI framework, such as [`react-i18next`](https://www.npmjs.com/package/react-i18next), for your translations. Here is a pure `Hello World` example:
 
@@ -148,10 +148,50 @@ switch (locale) {
 </Layout>
 ```
 
-### Options
+### Astro config options
 
-- `include`: glob pattern(s) to include (default: `["pages/**/*"]`)
-- `exclude`: glob pattern(s) to exclude (default: `["pages/api/**/*"]`)
+Please see the official Astro docs for more details:
+
+- [`site`](https://docs.astro.build/en/reference/configuration-reference/#site)
+- [`trailingSlash`](https://docs.astro.build/en/reference/configuration-reference/#trailingslash)
+- [`format`](https://docs.astro.build/en/reference/configuration-reference/#buildformat)
+
+You must set either:
+
+- ```js
+  {
+    site: "https://example.com/",
+    trailingSlash: "always",
+    build: {
+      format: "directory",
+    },
+  }
+  ```
+
+- ```js
+  {
+    site: "https://example.com",
+    trailingSlash: "never",
+    build: {
+      format: "file",
+    },
+  }
+  ```
+
+All these options are related and must be set together. They affect whether your urls are:
+
+- `/about/`
+- `/about`
+
+If you choose `/about/`, then `/about` will 404 and vice versa.
+
+### Integration options
+
+- `locales`: A record of all language locales.
+- `defaultLocale`: The default language locale. The value must present in `locales` keys.
+- `redirectDefaultLocale` - Assuming the defaultLocale `en`, whether `/en/about/` redirects to `/about/` (default: `true`).
+- `include`: Glob pattern(s) to include (default: `["pages/**/*"]`).
+- `exclude`: Glob pattern(s) to exclude (default: `["pages/api/**/*"]`).
 
 Other Astro page file types:
 
@@ -204,30 +244,15 @@ By default, all pages in `pages/api/**/*` are ignored.
 
 For `.ts` and `.js` endpoints, how you handle multiple locales is up to you. As endpoints are not user-facing and there are many different ways to use endpoints, we leave the implementation up to your preferences.
 
+### Middleware options
+
+- `defaultLocale` - The default language locale. The value must present in `locales` keys.
+- `redirectDefaultLocale` - Assuming the defaultLocale `en`, whether `/en/about/` redirects to `/about/` (default: `true`).
+
 ## License
 
 MIT Licensed
 
 ## Contributing
 
-PRs welcome! Thank you for your contributions.
-
-### The How
-
-Unfortunately, i18n is not a first-class concern for Astro. While Astro documents i18n in their [cookbook](https://docs.astro.build/en/recipes/i18n/), they do not support a `defaultLocale`.
-
-The other community integrations that Astro links do not support all adapters:
-
-- [**astro-i18next**](https://www.npmjs.com/package/astro-i18next) An Astro integration for i18next including some utility components.
-- [**astro-i18n**](https://www.npmjs.com/package/astro-i18n) A TypeScript-first internationalization library for Astro.
-
-Astro does not easily support two pages having the same content:
-
-- Route variables `/[lang]/about` cannot be undefined or an empty string
-- Middleware `request.url` is read-only, so it is not possible to retrieve content from a different url
-- Configured redirects do not support route transitions like `'/article': '/blog/[...slug]'`, only `'/blog/[...slug]': '/articles/[...slug]'`
-- The `injectRoute` method cannot inject an `entryPoint` that is already being used in the build command
-
-We duplicate the `src/pages` folder multiple times and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but those will be automatically cleaned on every started and completed build.
-
-Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects-experimental) for non-existent routes, so middleware must be used with `src/astro_tmp_pages_DEFAULTLOCALE` to create redirects.
+PRs welcome! Thank you for your help. Read more in the [contributing guide](https://github.com/jlarmstrongiv/astro-i18n-aut/blob/main/CONTRIBUTING.md) for reporting bugs and making PRs.
