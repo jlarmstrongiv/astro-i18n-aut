@@ -196,7 +196,7 @@ Astro does not support `.tsx` or `.jsx` as page file types.
 
 For UI frameworks like React and Vue, use them how you [normally](https://docs.astro.build/en/core-concepts/framework-components/) would with Astro by importing them as components.
 
-Feel free to pass the translated content (`title={t('title')}`) or locale (`locale={locale}`) as props.
+Feel free to pass the translated content `title={t('title')}` or locale `locale={locale}` as props.
 
 #### Endpoints
 
