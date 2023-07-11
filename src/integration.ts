@@ -119,9 +119,7 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
                 config.base,
                 locale,
                 relativePath,
-                parsedPath.name.endsWith("index")
-                  ? relativePath
-                  : parsedPath.name,
+                parsedPath.name.endsWith("index") ? "" : parsedPath.name,
                 config.build.format === "directory" ? "/" : ""
               )
             );
