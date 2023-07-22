@@ -64,8 +64,8 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
           pagesPathTmp[locale] = `${pagesPathTmpRoot}_${locale}`;
         }
 
+        await removePagesPathTmp();
         if (command === "build") {
-          await removePagesPathTmp();
           await Promise.all(
             Object.keys(locales)
               .filter((locale) => {
