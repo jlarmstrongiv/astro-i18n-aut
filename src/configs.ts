@@ -70,7 +70,11 @@ type PartialFieldsOnly<T> = {
 /**
  * The default values for I18nConfig
  */
-export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
+export const defaultI18nConfig: Required<UserI18nConfig> = {
+  defaultLocale: "en",
+  locales: {
+    en: "en-US",
+    },
   include: ["pages/**/*"],
   exclude: ["pages/api/**/*"],
   redirectDefaultLocale: true,
@@ -80,7 +84,8 @@ export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
  * The default values for I18nMiddlewareConfig
  */
 export const defaultI18nMiddlewareConfig: Required<
-  PartialFieldsOnly<UserI18nMiddlewareConfig>
+  UserI18nMiddlewareConfig
 > = {
+  defaultLocale: defaultI18nConfig.defaultLocale,
   redirectDefaultLocale: defaultI18nConfig.redirectDefaultLocale,
 };
