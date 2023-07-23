@@ -13,3 +13,20 @@ export function getLocale(url: URL): string | undefined {
   // otherwise, it must be a defaultLocale or other url
   return undefined;
 }
+
+/**
+ * @returns locale key or undefined if defaultLocale
+ */
+export function getLocaleFromSlug(slug: string): string | undefined {
+
+  if(slug?.length > 0 && slug[0] === "/") {
+    slug = slug.slice(1);
+  }
+
+  const pathSlices = slug.split("/");
+  if (pathSlices.length > 1) {
+    return pathSlices[0];
+  }
+
+  return undefined;
+}
