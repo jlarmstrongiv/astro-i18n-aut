@@ -4,10 +4,10 @@ import dedent from "dedent";
 import fg from "fast-glob";
 import fs from "fs-extra";
 import slash from "slash";
-import { logger } from "./logger/node";
-import { removeLeadingForwardSlashWindows } from "./internal-helpers/path";
-import { defaultI18nConfig } from "./configs";
-import type { UserI18nConfig, I18nConfig } from "./configs";
+import { logger } from "../astro/logger/node";
+import { removeLeadingForwardSlashWindows } from "../astro/internal-helpers/path";
+import { defaultI18nConfig } from "../shared/configs";
+import type { UserI18nConfig, I18nConfig } from "../shared/configs";
 
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
 // workaround: copy pages folder when command === "build"

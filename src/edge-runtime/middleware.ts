@@ -1,7 +1,10 @@
 import type { ValidRedirectStatus } from "astro";
 import { defineMiddleware } from "astro/middleware";
-import { defaultI18nMiddlewareConfig } from "./configs";
-import type { UserI18nMiddlewareConfig, I18nMiddlewareConfig } from "./configs";
+import { defaultI18nMiddlewareConfig } from "../shared/configs";
+import type {
+  UserI18nMiddlewareConfig,
+  I18nMiddlewareConfig,
+} from "../shared/configs";
 
 const redirectDefaultLocaleDisabledMiddleware = defineMiddleware((_, next) =>
   next()
