@@ -29,7 +29,7 @@
       "*": [
         "./dist/edge-runtime/index.d.ts"
       ],
-      "module2": [
+      "integration": [
         "./dist/integration/index.d.ts"
       ]
     }
