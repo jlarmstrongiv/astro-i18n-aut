@@ -24,6 +24,16 @@
   "author": "John L. Armstrong IV",
   "sideEffects": false,
   "type": "module",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/edge-runtime/index.d.ts"
+      ],
+      "module2": [
+        "./dist/integration/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/edge-runtime/index.d.ts",
