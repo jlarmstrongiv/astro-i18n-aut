@@ -60,9 +60,6 @@ const locales = {
 };
 
 export default defineConfig({
-  experimental: {
-    redirects: true,
-  },
   site: "https://example.com/",
   trailingSlash: "always",
   build: {

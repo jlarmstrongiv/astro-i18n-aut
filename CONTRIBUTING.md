@@ -31,4 +31,4 @@ Astro does not easily support two pages having the same content:
 
 We duplicate the `src/pages` folder multiple times and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but those will be automatically cleaned on every started and completed build.
 
-Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects-experimental) for non-existent routes, so middleware must be used with `src/astro_tmp_pages_DEFAULTLOCALE` to create redirects.
+Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects) for non-existent routes, so middleware must be used with `src/astro_tmp_pages_DEFAULTLOCALE` to create redirects.

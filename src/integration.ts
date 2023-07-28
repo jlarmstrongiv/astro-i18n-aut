@@ -176,22 +176,6 @@ async function ensureValidConfigs(config: AstroConfig, i18nConfig: I18nConfig) {
       config.build.format === "directory" ? "always" : "never";
   }
 
-  // use @ts-ignore to avoid errors when
-  // redirects is no longer experimental
-  if (
-    // @ts-ignore
-    config.experimental.redirects === false &&
-    i18nConfig.redirectDefaultLocale !== false
-  ) {
-    logger.warn(
-      "astro-i18n-aut",
-      `setting config.experimental.redirects = true`
-    );
-    // avoids error from https://web.archive.org/web/20230707092911/https://github.com/withastro/astro/blob/main/packages/astro/src/core/endpoint/index.ts
-    // @ts-ignore
-    config.experimental.redirects = true;
-  }
-
   if (i18nConfig.redirectDefaultLocale) {
     const configSrcDirPathname = path.normalize(
       removeLeadingForwardSlashWindows(config.srcDir.pathname)
