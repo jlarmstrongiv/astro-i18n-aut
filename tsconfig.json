@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
+    "module": "ES2020",
     "lib": ["dom", "ES2017"],
     "allowJs": false,
     "baseUrl": "./",
