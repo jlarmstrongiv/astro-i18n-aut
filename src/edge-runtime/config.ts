@@ -1,4 +1,4 @@
-import virtualConfig from "virtual:astro-i18n-aut/config";
+import virtualConfig from "virtual:astro-i18n-aut";
 
 export const trailingSlash = virtualConfig.trailingSlash;
 export const BASE_URL = virtualConfig.BASE_URL;

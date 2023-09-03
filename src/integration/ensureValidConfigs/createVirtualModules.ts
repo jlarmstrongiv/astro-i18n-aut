@@ -29,7 +29,7 @@ export function createVirtualModules(
   };
 
   const virtualPlugins = virtual({
-    "virtual:astro-i18n-aut/config": virtualAstroi18nautConfig,
+    "virtual:astro-i18n-aut": virtualAstroi18nautConfig,
   });
 
   config.vite.plugins.push(virtualPlugins);
