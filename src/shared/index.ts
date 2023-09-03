@@ -1,7 +1,7 @@
-export { defaultLocaleSitemapFilter } from "./defaultLocaleSitemapFilter";
-export { defaultI18nConfig, defaultI18nMiddlewareConfig } from "./configs";
+export { sitemapFilterByDefaultLocale } from "./sitemapFilterByDefaultLocale";
+export { defaultI18nConfig } from "./configs";
 export type {
   UserI18nConfig,
-  UserI18nMiddlewareConfig,
-  UserDefaultLocaleSitemapFilterConfig,
+  UserSitemapFilterByDefaultLocaleConfig as UserSitemapFilterByDefaultLocaleConfig,
+  VirtualAstroi18nautConfig,
 } from "./configs";

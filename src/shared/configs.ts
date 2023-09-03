@@ -1,4 +1,4 @@
-import type { ValidRedirectStatus } from "astro";
+import type { AstroConfig, ValidRedirectStatus } from "astro";
 
 export interface UserI18nConfig {
   /**
@@ -48,19 +48,25 @@ export interface UserI18nConfig {
   redirectDefaultLocale?: boolean | ValidRedirectStatus;
 }
 
-export type UserI18nMiddlewareConfig = Pick<
+export type VirtualAstroi18nautConfig = Pick<
   UserI18nConfig,
-  "defaultLocale" | "redirectDefaultLocale"
->;
+  "defaultLocale" | "locales" | "redirectDefaultLocale"
+> & {
+  BASE_URL: string;
+  trailingSlash: AstroConfig["trailingSlash"];
+  build: {
+    format: AstroConfig["build"]["format"];
+  };
+};
 
-export type UserDefaultLocaleSitemapFilterConfig = Pick<
+export type UserSitemapFilterByDefaultLocaleConfig = Pick<
   UserI18nConfig,
   "defaultLocale"
->;
+> & {
+  base: string;
+};
 
 export type I18nConfig = Required<UserI18nConfig>;
-
-export type I18nMiddlewareConfig = Required<UserI18nMiddlewareConfig>;
 
 // opposite of RequiredFieldsOnly https://stackoverflow.com/a/68261391
 type PartialFieldsOnly<T> = {
@@ -74,13 +80,4 @@ export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
   include: ["pages/**/*"],
   exclude: ["pages/api/**/*"],
   redirectDefaultLocale: true,
-};
-
-/**
- * The default values for I18nMiddlewareConfig
- */
-export const defaultI18nMiddlewareConfig: Required<
-  PartialFieldsOnly<UserI18nMiddlewareConfig>
-> = {
-  redirectDefaultLocale: defaultI18nConfig.redirectDefaultLocale,
 };

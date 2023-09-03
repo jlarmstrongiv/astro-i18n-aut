@@ -1,10 +1,20 @@
+export {
+  defaultLocale,
+  locales,
+  localeKeys,
+  trailingSlash,
+  build,
+  BASE_URL,
+} from "./config";
 export { i18nMiddleware } from "./middleware";
+export { collectionFilterByDefaultLocale } from "./collectionFilterByDefaultLocale";
+export { getAllLocaleUrls } from "./getAllLocaleUrls";
 export { getLocale } from "./getLocale";
+export { getLocaleUrl } from "./getLocaleUrl";
 export { getLocaleUrlPrefix } from "./getLocaleUrlPrefix";
 export { getUrlWithoutLocale } from "./getUrlWithoutLocale";
-export { defaultI18nConfig, defaultI18nMiddlewareConfig } from "../shared";
+export { defaultI18nConfig } from "../shared";
 export type {
   UserI18nConfig,
-  UserI18nMiddlewareConfig,
-  UserDefaultLocaleSitemapFilterConfig,
+  UserSitemapFilterByDefaultLocaleConfig,
 } from "../shared";

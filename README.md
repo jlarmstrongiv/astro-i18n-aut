@@ -49,7 +49,7 @@ In your Astro [config](https://docs.astro.build/en/guides/configuring-astro/#sup
 
 ```ts
 import { defineConfig } from "astro/config";
-import { i18n, defaultLocaleSitemapFilter } from "astro-i18n-aut/integration";
+import { i18n, sitemapFilterByDefaultLocale } from "astro-i18n-aut/integration";
 import sitemap from "@astrojs/sitemap";
 
 const defaultLocale = "en";
@@ -75,7 +75,7 @@ export default defineConfig({
         locales,
         defaultLocale,
       },
-      filter: defaultLocaleSitemapFilter({ defaultLocale }),
+      filter: sitemapFilterByDefaultLocale({ defaultLocale }),
     }),
   ],
 });
@@ -87,9 +87,7 @@ In your Astro [middleware](https://docs.astro.build/en/guides/middleware/#chaini
 import { sequence } from "astro/middleware";
 import { i18nMiddleware } from "astro-i18n-aut";
 
-const i18n = i18nMiddleware({ defaultLocale: "en" });
-
-export const onRequest = sequence(i18n);
+export const onRequest = sequence(i18nMiddleware);
 ```
 
 In your `.gitignore` file:
@@ -145,6 +143,8 @@ switch (locale) {
 </Layout>
 ```
 
+Several helper functions are included to make handling locales easier.
+
 ### Astro config options
 
 Please see the official Astro docs for more details:
@@ -174,6 +174,8 @@ You must set either:
     },
   }
   ```
+
+If you change these Astro settings, you must completely restart your dev server in your terminal. The automatic restart is insufficient.
 
 All these options are related and must be set together. They affect whether your urls are:
 
@@ -240,11 +242,6 @@ Feel free to pass the translated content `title={t('title')}` or locale `locale=
 By default, all pages in `pages/api/**/*` are ignored.
 
 For `.ts` and `.js` endpoints, how you handle multiple locales is up to you. As endpoints are not user-facing and there are many different ways to use endpoints, we leave the implementation up to your preferences.
-
-### Middleware options
-
-- `defaultLocale` - The default language locale. The value must present in `locales` keys.
-- `redirectDefaultLocale` - Assuming the `defaultLocale: "en"`, whether `/en/about/` redirects to `/about/` (default: `true`).
 
 ## License
 

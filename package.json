@@ -58,7 +58,8 @@
     "dedent": "^1.5.1",
     "fast-glob": "^3.3.1",
     "fs-extra": "^11.1.1",
-    "slash": "^5.1.0"
+    "slash": "^5.1.0",
+    "vite-plugin-virtual": "^0.2.0"
   },
   "devDependencies": {
     "@types/dedent": "^0.7.0",

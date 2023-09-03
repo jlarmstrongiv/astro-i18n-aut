@@ -1,11 +1,24 @@
+import {
+  // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
+  BASE_URL as baseUrl,
+  localeKeys,
+  defaultLocale,
+} from "./config";
+
 /**
- * @returns locale prefix "/es" or "" if defaultLocale
+ * @returns locale prefix or an empty string if defaultLocale
+ * @example
+ * ```ts
+ * getLocaleUrlPrefix("/es/about") // "/es"
+ * ```
+ * @example
+ * ```ts
+ * getLocale("/about") // ""
+ * ```
  */
 export function getLocaleUrlPrefix(url: URL | string): string {
   // support both string and url objects
   const pathName = typeof url === "string" ? url : url.pathname;
-  // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
-  const baseUrl = import.meta.env.BASE_URL;
 
   let pathNameWithoutBaseUrl: string;
   if (baseUrl === "/") {
@@ -21,13 +34,21 @@ export function getLocaleUrlPrefix(url: URL | string): string {
     pathNameWithoutBaseUrl = pathName.replace(baseUrlWithoutTrailingSlash, "");
   }
 
+  const possibleLocaleKey = pathNameWithoutBaseUrl.slice(1, 3);
+  const pathNameWithoutBaseUrlStartsWithLocale = localeKeys
+    .filter((key) => key !== defaultLocale)
+    .includes(possibleLocaleKey);
+
   // avoid catching urls that start with "/en" like "/enigma"
-  if (pathNameWithoutBaseUrl.length === 3) {
-    return pathNameWithoutBaseUrl;
+  if (
+    pathNameWithoutBaseUrl.length === 3 &&
+    pathNameWithoutBaseUrlStartsWithLocale
+  ) {
+    return "/" + possibleLocaleKey;
   }
   if (pathNameWithoutBaseUrl[0] === "/" && pathNameWithoutBaseUrl[3] === "/") {
     // catch all "/fr/**/*" urls
-    return pathNameWithoutBaseUrl.slice(0, 3);
+    return "/" + possibleLocaleKey;
   }
   // otherwise, it must be a defaultLocale or other url
   return "";

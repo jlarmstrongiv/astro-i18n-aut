@@ -1,6 +1,5 @@
 import path from "node:path";
-import type { AstroConfig, AstroIntegration } from "astro";
-import dedent from "dedent";
+import type { AstroIntegration } from "astro";
 import fg from "fast-glob";
 import fs from "fs-extra";
 import slash from "slash";
@@ -8,6 +7,7 @@ import { logger } from "../astro/logger/node";
 import { removeLeadingForwardSlashWindows } from "../astro/internal-helpers/path";
 import { defaultI18nConfig } from "../shared/configs";
 import type { UserI18nConfig, I18nConfig } from "../shared/configs";
+import { ensureValidConfigs } from "./ensureValidConfigs";
 
 // injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
 // workaround: copy pages folder when command === "build"
@@ -151,76 +151,6 @@ function ensureValidLocales(
     )} does not include "${defaultLocale}"`;
     logger.error("astro-i18n-aut", errorMessage);
     throw new Error(errorMessage);
-  }
-}
-
-async function ensureValidConfigs(config: AstroConfig, i18nConfig: I18nConfig) {
-  if (config.trailingSlash === "ignore" && config.output === "static") {
-    logger.warn(
-      "astro-i18n-aut",
-      `avoid setting config.trailingSlash = "ignore" when config.output = "static"`
-    );
-    logger.warn(
-      "astro-i18n-aut",
-      `config.trailingSlash = "always" && config.build.format = "directory"`
-    );
-    logger.warn(
-      "astro-i18n-aut",
-      `config.trailingSlash = "never" && config.build.format = "file"`
-    );
-    logger.warn(
-      "astro-i18n-aut",
-      `setting config.trailingSlash = "${config.trailingSlash}"`
-    );
-    config.trailingSlash =
-      config.build.format === "directory" ? "always" : "never";
-  }
-
-  if (i18nConfig.redirectDefaultLocale) {
-    const configSrcDirPathname = path.normalize(
-      removeLeadingForwardSlashWindows(config.srcDir.pathname)
-    );
-
-    // all possible locations of middleware
-    const defaultMiddlewarePath = path.join(
-      configSrcDirPathname,
-      "middleware/index.ts"
-    );
-    const middlewarePaths = [
-      path.join(configSrcDirPathname, "middleware.js"),
-      path.join(configSrcDirPathname, "middleware.ts"),
-      path.join(configSrcDirPathname, "middleware/index.js"),
-      defaultMiddlewarePath,
-    ];
-
-    // check if middleware exists
-    const pathsExist = await Promise.all(
-      middlewarePaths.map((middlewarePath) => fs.exists(middlewarePath))
-    );
-    const pathExists = pathsExist.includes(true);
-
-    // warn and create middleware if it does not exist
-    if (pathExists === false) {
-      logger.warn("astro-i18n-aut", `cannot find any Astro middleware files:`);
-      middlewarePaths.forEach((middlewarePath) => {
-        logger.warn("astro-i18n-aut", `- ${middlewarePath}`);
-      });
-      logger.warn(
-        "astro-i18n-aut",
-        `creating ${defaultMiddlewarePath} with defaultLocale = "en"`
-      );
-      await fs.outputFile(
-        defaultMiddlewarePath,
-        dedent(`
-          import { sequence } from "astro/middleware";
-          import { i18nMiddleware } from "astro-i18n-aut";
-
-          const i18n = i18nMiddleware({ defaultLocale: "en" });
-
-          export const onRequest = sequence(i18n);
-        `)
-      );
-    }
   }
 }
 
