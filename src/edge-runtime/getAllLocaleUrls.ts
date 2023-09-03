@@ -54,20 +54,18 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
     pathNameWithoutBaseUrlStartsWithLocale
   ) {
     return {
-      [defaultLocale]: baseUrl,
       ...localeKeys.reduce<Record<string, string>>((record, locale) => {
         record[locale] = baseUrl.endsWith("/")
           ? baseUrlWithoutTrailingSlash + "/" + locale + "/"
           : baseUrlWithoutTrailingSlash + "/" + locale;
         return record;
       }, {}),
+      [defaultLocale]: baseUrl,
     };
   }
   if (pathNameWithoutBaseUrl[0] === "/" && pathNameWithoutBaseUrl[3] === "/") {
     // catch all "/fr/**/*" original urls
     return {
-      [defaultLocale]:
-        baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3),
       ...localeKeys.reduce<Record<string, string>>((record, locale) => {
         record[locale] =
           baseUrlWithoutTrailingSlash +
@@ -76,16 +74,18 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
           pathNameWithoutBaseUrl.slice(3);
         return record;
       }, {}),
+      [defaultLocale]:
+        baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3),
     };
   }
 
   // otherwise, original url must be a defaultLocale or other url
   return {
-    [defaultLocale]: baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl,
     ...localeKeys.reduce<Record<string, string>>((record, locale) => {
       record[locale] =
         baseUrlWithoutTrailingSlash + "/" + locale + pathNameWithoutBaseUrl;
       return record;
     }, {}),
+    [defaultLocale]: baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl,
   };
 }
