@@ -34,7 +34,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
 
   // avoid catching urls that start with "/en" like "/enigma"
   if (pathNameWithoutBaseUrl === "/" + defaultLocale) {
-    return context.redirect(pathName.replace("/" + defaultLocale, "/"), status);
+    return context.redirect(pathName.replace("/" + defaultLocale, ""), status);
   }
   // catch all "/en/**/*" urls
   if (pathNameWithoutBaseUrl.startsWith("/" + defaultLocale + "/")) {

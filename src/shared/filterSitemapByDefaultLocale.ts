@@ -32,9 +32,9 @@ export function filterSitemapByDefaultLocale({
 
     return (
       // avoid catching urls that start with "/en" like "/enigma"
-      pathNameWithoutBaseUrl !== `/${defaultLocale}` &&
+      pathNameWithoutBaseUrl !== "/" + defaultLocale &&
       // catch all "/en/**/*" urls
-      !pathNameWithoutBaseUrl.startsWith(`/${defaultLocale}/`)
+      !pathNameWithoutBaseUrl.startsWith("/" + defaultLocale + "/")
     );
   };
 }
