@@ -35,7 +35,7 @@ import {
  * getLocaleUrl("/about", "es") // "/es/about"
  * ```
  */
-export function getLocaleUrl(url: URL | string, locale: string) {
+export function getLocaleUrl(url: URL | string, locale: string): string {
   // support both string and url objects
   const pathName = typeof url === "string" ? url : url.pathname;
 
