@@ -10,11 +10,13 @@ export function createVirtualPlugin(
 
   return {
     name: "vite-plugin:" + virtualModuleId, // required, will show up in warnings and errors
+    // @ts-expect-error
     resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;
       }
     },
+    // @ts-expect-error
     load(id) {
       if (id === resolvedVirtualModuleId) {
         return `export default ${JSON.stringify(json)}`;
