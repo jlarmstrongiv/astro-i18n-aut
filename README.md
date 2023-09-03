@@ -188,7 +188,7 @@ If you choose `/about/`, then `/about` will 404 and vice versa.
 
 - `locales`: A record of all language locales.
 - `defaultLocale`: The default language locale. The value must present in `locales` keys.
-- `redirectDefaultLocale` - Assuming the `defaultLocale: "en"`, whether `/en/about/` redirects to `/about/` (default: `true`).
+- `redirectDefaultLocale` - Assuming the `defaultLocale: "en"`, whether `/en/about/` redirects to `/about/` (default: `308`).
 - `include`: Glob pattern(s) to include (default: `["pages/**/*"]`).
 - `exclude`: Glob pattern(s) to exclude (default: `["pages/api/**/*"]`).
 

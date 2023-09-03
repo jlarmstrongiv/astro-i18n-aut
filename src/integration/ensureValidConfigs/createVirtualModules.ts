@@ -3,8 +3,6 @@ import type {
   I18nConfig,
   VirtualAstroi18nautConfig,
 } from "../../shared/configs";
-// TypeError: virtual is not a function
-// must embed module, cannot use as package
 import { createVirtualPlugin } from "./createVirtualPlugin";
 
 // worker plugins are separate https://github.com/vitejs/vite/issues/8520
