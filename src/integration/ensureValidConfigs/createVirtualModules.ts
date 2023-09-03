@@ -5,7 +5,7 @@ import type {
 } from "../../shared/configs";
 // TypeError: virtual is not a function
 // must embed module, cannot use as package
-import virtual from "../../virtual";
+import { createVirtualPlugin } from "./createVirtualPlugin";
 
 // worker plugins are separate https://github.com/vitejs/vite/issues/8520
 
@@ -28,12 +28,12 @@ export function createVirtualModules(
     },
   };
 
-  const virtualPlugins = virtual({
-    "virtual:astro-i18n-aut": virtualAstroi18nautConfig,
-  });
-
-  config.vite.plugins.push(virtualPlugins);
-  config.vite.worker.plugins.push(virtualPlugins);
+  const virtualPlugin = createVirtualPlugin(
+    "virtual:astro-i18n-aut",
+    virtualAstroi18nautConfig
+  );
+  config.vite.plugins.push(virtualPlugin);
+  config.vite.worker.plugins.push(virtualPlugin);
 }
 
 function getBaseUrl(config: AstroConfig): string {
