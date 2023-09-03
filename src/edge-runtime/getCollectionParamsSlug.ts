@@ -1,6 +1,6 @@
 import { defaultLocale } from "./config";
 
-export function getCollectionSlugs(entries: unknown[]) {
+export function getCollectionParamsSlug(entries: unknown[]) {
   return entries.reduce<{ params: { slug: string } }[]>(
     (accumulator, entry) => {
       if (

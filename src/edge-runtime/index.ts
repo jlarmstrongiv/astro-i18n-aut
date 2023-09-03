@@ -8,7 +8,7 @@ export {
 } from "./config";
 export { i18nMiddleware } from "./middleware";
 export { filterCollectionByDefaultLocale } from "./filterCollectionByDefaultLocale";
-export { getCollectionSlugs } from "./getCollectionSlugs";
+export { getCollectionParamsSlug } from "./getCollectionParamsSlug";
 export { getAllLocaleUrls } from "./getAllLocaleUrls";
 export { getLocale } from "./getLocale";
 export { getLocaleUrl } from "./getLocaleUrl";
