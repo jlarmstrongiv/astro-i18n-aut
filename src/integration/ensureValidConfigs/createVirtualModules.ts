@@ -34,6 +34,11 @@ export function createVirtualModules(
   );
   config.vite.plugins.push(virtualPlugin);
   config.vite.worker.plugins.push(virtualPlugin);
+
+  // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
+  config.vite.optimizeDeps ??= {};
+  config.vite.optimizeDeps.exclude ??= [];
+  config.vite.optimizeDeps.exclude.push("virtual:astro-i18n-aut");
 }
 
 function getBaseUrl(config: AstroConfig): string {
