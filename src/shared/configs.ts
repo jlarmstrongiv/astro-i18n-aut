@@ -59,7 +59,7 @@ export type VirtualAstroi18nautConfig = Pick<
   };
 };
 
-export type UserSitemapFilterByDefaultLocaleConfig = Pick<
+export type UserFilterSitemapByDefaultLocaleConfig = Pick<
   UserI18nConfig,
   "defaultLocale"
 > & {

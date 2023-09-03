@@ -49,7 +49,7 @@ In your Astro [config](https://docs.astro.build/en/guides/configuring-astro/#sup
 
 ```ts
 import { defineConfig } from "astro/config";
-import { i18n, sitemapFilterByDefaultLocale } from "astro-i18n-aut/integration";
+import { i18n, filterSitemapByDefaultLocale } from "astro-i18n-aut/integration";
 import sitemap from "@astrojs/sitemap";
 
 const defaultLocale = "en";
@@ -75,7 +75,7 @@ export default defineConfig({
         locales,
         defaultLocale,
       },
-      filter: sitemapFilterByDefaultLocale({ defaultLocale }),
+      filter: filterSitemapByDefaultLocale({ defaultLocale }),
     }),
   ],
 });

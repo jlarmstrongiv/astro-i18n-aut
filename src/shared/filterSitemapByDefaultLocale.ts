@@ -1,10 +1,10 @@
-import type { UserSitemapFilterByDefaultLocaleConfig } from "./configs";
+import type { UserFilterSitemapByDefaultLocaleConfig } from "./configs";
 
 // sitemap filter https://docs.astro.build/en/guides/integrations-guide/sitemap/#filter
-export function sitemapFilterByDefaultLocale({
+export function filterSitemapByDefaultLocale({
   defaultLocale,
   base: baseUrl = "/",
-}: UserSitemapFilterByDefaultLocaleConfig) {
+}: UserFilterSitemapByDefaultLocaleConfig) {
   // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
   if (!baseUrl.startsWith("/")) {
     baseUrl = "/" + baseUrl;

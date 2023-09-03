@@ -7,7 +7,7 @@ export {
   BASE_URL,
 } from "./config";
 export { i18nMiddleware } from "./middleware";
-export { collectionFilterByDefaultLocale } from "./collectionFilterByDefaultLocale";
+export { filterCollectionByDefaultLocale } from "./filterCollectionByDefaultLocale";
 export { getAllLocaleUrls } from "./getAllLocaleUrls";
 export { getLocale } from "./getLocale";
 export { getLocaleUrl } from "./getLocaleUrl";
@@ -16,5 +16,5 @@ export { getUrlWithoutLocale } from "./getUrlWithoutLocale";
 export { defaultI18nConfig } from "../shared";
 export type {
   UserI18nConfig,
-  UserSitemapFilterByDefaultLocaleConfig,
+  UserFilterSitemapByDefaultLocaleConfig,
 } from "../shared";

@@ -1,6 +1,6 @@
 import { defaultLocale } from "./config";
 
-export function collectionFilterByDefaultLocale(entry: unknown) {
+export function filterCollectionByDefaultLocale(entry: unknown) {
   if (
     typeof entry === "object" &&
     entry !== null &&
