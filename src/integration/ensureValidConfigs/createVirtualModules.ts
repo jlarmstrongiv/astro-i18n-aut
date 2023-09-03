@@ -3,7 +3,7 @@ import type {
   I18nConfig,
   VirtualAstroi18nautConfig,
 } from "../../shared/configs";
-import virtual, { updateVirtualModule } from "vite-plugin-virtual";
+import virtual from "vite-plugin-virtual";
 
 // worker plugins are separate https://github.com/vitejs/vite/issues/8520
 
