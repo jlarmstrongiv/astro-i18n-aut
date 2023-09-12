@@ -38,8 +38,13 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
   return {
     name: "astro-i18n-integration",
     hooks: {
-      "astro:config:setup": async ({ config, command, injectRoute }) => {
-        await ensureValidConfigs(config, i18nConfig);
+      "astro:config:setup": async ({
+        config,
+        updateConfig,
+        command,
+        injectRoute,
+      }) => {
+        await ensureValidConfigs(config, updateConfig, i18nConfig);
         const configSrcDirPathname = path.normalize(
           removeLeadingForwardSlashWindows(config.srcDir.pathname)
         );

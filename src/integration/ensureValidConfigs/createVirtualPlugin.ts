@@ -3,7 +3,7 @@ import type { Plugin } from "vite";
 // documentation https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
 
 export function createVirtualPlugin(
-  virtualModuleId: string = "virtual:astro-i18n-aut",
+  virtualModuleId: string,
   json: any
 ): Plugin {
   const resolvedVirtualModuleId = "\0" + virtualModuleId;

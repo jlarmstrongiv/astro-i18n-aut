@@ -1,7 +1,11 @@
 import type { AstroConfig } from "astro";
+import type { UpdateConfig } from "./UpdateConfig";
 import { logger } from "../../astro/logger/node";
 
-export function ensureValidTrailingSlashAndFormat(config: AstroConfig) {
+export function ensureValidTrailingSlashAndFormat(
+  config: AstroConfig,
+  updateConfig: UpdateConfig
+) {
   if (config.trailingSlash === "ignore" && config.output === "static") {
     logger.warn(
       "astro-i18n-aut",
@@ -19,8 +23,9 @@ export function ensureValidTrailingSlashAndFormat(config: AstroConfig) {
       "astro-i18n-aut",
       `setting config.trailingSlash = "${config.trailingSlash}"`
     );
-    config.trailingSlash =
-      config.build.format === "directory" ? "always" : "never";
+    updateConfig({
+      trailingSlash: config.build.format === "directory" ? "always" : "never",
+    });
   }
   if (config.trailingSlash === "always" && config.build.format === "file") {
     logger.warn(
@@ -28,7 +33,11 @@ export function ensureValidTrailingSlashAndFormat(config: AstroConfig) {
       `config.trailingSlash = "always" must always be used with config.build.format = "directory"`
     );
     logger.warn("astro-i18n-aut", `setting config.build.format = "directory"`);
-    config.build.format = "directory";
+    updateConfig({
+      build: {
+        format: "directory",
+      },
+    });
   }
   if (config.trailingSlash === "never" && config.build.format === "directory") {
     logger.warn(
@@ -36,6 +45,10 @@ export function ensureValidTrailingSlashAndFormat(config: AstroConfig) {
       `config.trailingSlash = "never" must always be used with config.build.format = "file"`
     );
     logger.warn("astro-i18n-aut", `setting config.build.format = "file"`);
-    config.build.format = "file";
+    updateConfig({
+      build: {
+        format: "file",
+      },
+    });
   }
 }

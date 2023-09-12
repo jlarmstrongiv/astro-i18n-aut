@@ -175,8 +175,6 @@ You must set either:
   }
   ```
 
-If you change these Astro settings, you must completely restart your dev server in your terminal. The automatic restart is insufficient.
-
 All these options are related and must be set together. They affect whether your urls are:
 
 - `/about/`

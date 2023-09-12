@@ -1,20 +1,16 @@
 import type { AstroConfig } from "astro";
+import { UpdateConfig } from "./UpdateConfig";
 import type {
   I18nConfig,
   VirtualAstroi18nautConfig,
 } from "../../shared/configs";
 import { createVirtualPlugin } from "./createVirtualPlugin";
 
-// worker plugins are separate https://github.com/vitejs/vite/issues/8520
-
 export function createVirtualModules(
   config: AstroConfig,
+  updateConfig: UpdateConfig,
   i18nConfig: I18nConfig
 ): void {
-  config.vite.plugins ??= [];
-  config.vite.worker ??= {};
-  config.vite.worker.plugins ??= [];
-
   const virtualAstroi18nautConfig: VirtualAstroi18nautConfig = {
     defaultLocale: i18nConfig.defaultLocale,
     locales: i18nConfig.locales,
@@ -30,13 +26,20 @@ export function createVirtualModules(
     "virtual:astro-i18n-aut",
     virtualAstroi18nautConfig
   );
-  config.vite.plugins.push(virtualPlugin);
-  config.vite.worker.plugins.push(virtualPlugin);
 
-  // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
-  config.vite.optimizeDeps ??= {};
-  config.vite.optimizeDeps.exclude ??= [];
-  config.vite.optimizeDeps.exclude.push("virtual:astro-i18n-aut");
+  updateConfig({
+    vite: {
+      plugins: [virtualPlugin],
+      // worker plugins are separate https://github.com/vitejs/vite/issues/8520
+      worker: {
+        plugins: [virtualPlugin],
+      },
+      // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
+      optimizeDeps: {
+        exclude: ["virtual:astro-i18n-aut"],
+      },
+    },
+  });
 }
 
 function getBaseUrl(config: AstroConfig): string {
