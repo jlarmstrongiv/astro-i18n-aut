@@ -50,6 +50,7 @@ function getBaseUrl(config: AstroConfig): string {
     base = "/" + base;
   }
 
+  // https://docs.astro.build/en/reference/configuration-reference/#base
   // The value of import.meta.env.BASE_URL respects your trailingSlash config
   // and will include a trailing slash
   // if you explicitly include one
