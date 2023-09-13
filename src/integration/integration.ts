@@ -1,9 +1,8 @@
 import path from "node:path";
-import type { AstroIntegration } from "astro";
+import type { AstroIntegration, AstroIntegrationLogger } from "astro";
 import fg from "fast-glob";
 import fs from "fs-extra";
 import slash from "slash";
-import { logger } from "../astro/logger/node";
 import { removeLeadingForwardSlashWindows } from "../astro/internal-helpers/path";
 import { defaultI18nConfig } from "../shared/configs";
 import type { UserI18nConfig, I18nConfig } from "../shared/configs";
@@ -26,8 +25,6 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
   const { defaultLocale, locales, exclude, include, redirectDefaultLocale } =
     i18nConfig;
 
-  ensureValidLocales(locales, defaultLocale);
-
   let pagesPathTmp: Record<string, string> = {};
   async function removePagesPathTmp(): Promise<void> {
     await Promise.all(
@@ -43,8 +40,10 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
         updateConfig,
         command,
         injectRoute,
+        logger,
       }) => {
-        await ensureValidConfigs(config, updateConfig, i18nConfig);
+        ensureValidLocales(locales, defaultLocale, logger);
+        await ensureValidConfigs(config, updateConfig, i18nConfig, logger);
         const configSrcDirPathname = path.normalize(
           removeLeadingForwardSlashWindows(config.srcDir.pathname)
         );
@@ -103,7 +102,8 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
             warnIsInvalidPage(
               extname,
               path.join(relativePath, parsedPath.base),
-              configSrcDirPathname
+              configSrcDirPathname,
+              logger
             );
             continue;
           }
@@ -148,13 +148,14 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
 
 function ensureValidLocales(
   locales: Record<string, string>,
-  defaultLocale: string
+  defaultLocale: string,
+  logger: AstroIntegrationLogger
 ) {
   if (!Object.keys(locales).includes(defaultLocale)) {
     const errorMessage = `locales ${JSON.stringify(
       locales
     )} does not include "${defaultLocale}"`;
-    logger.error("astro-i18n-aut", errorMessage);
+    logger.error(errorMessage);
     throw new Error(errorMessage);
   }
 }
@@ -184,21 +185,18 @@ let hasWarnedIsInvalidPage = false;
 function warnIsInvalidPage(
   extname: string,
   filePath: string,
-  configSrcDirPathname: string
+  configSrcDirPathname: string,
+  logger: AstroIntegrationLogger
 ): boolean {
   // astro pages file types https://docs.astro.build/en/core-concepts/astro-pages/#supported-page-files
   if (["js", "ts", "md", "mdx", "html"].includes(extname)) {
     if (hasWarnedIsInvalidPage === false) {
       logger.warn(
-        "astro-i18n-aut",
         `exclude or remove non-astro files from "${configSrcDirPathname}pages", as they cannot be translated`
       );
       hasWarnedIsInvalidPage = true;
     }
-    logger.warn(
-      "astro-i18n-aut",
-      path.join(configSrcDirPathname, "pages", filePath)
-    );
+    logger.warn(path.join(configSrcDirPathname, "pages", filePath));
     return true;
   }
   return false;

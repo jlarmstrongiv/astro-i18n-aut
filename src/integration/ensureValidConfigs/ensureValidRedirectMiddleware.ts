@@ -1,14 +1,14 @@
-import type { AstroConfig } from "astro";
+import type { AstroConfig, AstroIntegrationLogger } from "astro";
 import type { I18nConfig } from "../../shared/configs";
 import path from "path";
 import fs from "fs-extra";
 import dedent from "dedent";
-import { logger } from "../../astro/logger/node";
 import { removeLeadingForwardSlashWindows } from "../../astro/internal-helpers/path";
 
 export async function ensureValidRedirectMiddleware(
   config: AstroConfig,
-  i18nConfig: I18nConfig
+  i18nConfig: I18nConfig,
+  logger: AstroIntegrationLogger
 ) {
   if (i18nConfig.redirectDefaultLocale) {
     const configSrcDirPathname = path.normalize(
@@ -35,12 +35,11 @@ export async function ensureValidRedirectMiddleware(
 
     // warn and create middleware if it does not exist
     if (pathExists === false) {
-      logger.warn("astro-i18n-aut", `cannot find any Astro middleware files:`);
+      logger.warn(`cannot find any Astro middleware files:`);
       middlewarePaths.forEach((middlewarePath) => {
-        logger.warn("astro-i18n-aut", `- ${middlewarePath}`);
+        logger.warn(`- ${middlewarePath}`);
       });
       logger.warn(
-        "astro-i18n-aut",
         `creating ${defaultMiddlewarePath} with defaultLocale = "en"`
       );
       await fs.outputFile(
