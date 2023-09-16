@@ -22,17 +22,13 @@ export function getLocale(url: URL | string): string {
   const pathName = typeof url === "string" ? url : url.pathname;
   // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
 
-  let pathNameWithoutBaseUrl: string;
-  if (baseUrl === "/") {
-    // there is no baseUrl set
-    pathNameWithoutBaseUrl = pathName;
-  } else {
-    // remove trailingSlash from baseUrl if it exists
-    let baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
-    // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
-    pathNameWithoutBaseUrl = pathName.replace(baseUrlWithoutTrailingSlash, "");
-  }
+  // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
+  let pathNameWithoutBaseUrl =
+    baseUrl === "/"
+      ? pathName
+      : pathName.replace(baseUrlWithoutTrailingSlash, "");
 
   const possibleLocaleKey = pathNameWithoutBaseUrl.slice(1, 3);
   const pathNameWithoutBaseUrlStartsWithLocale = localeKeys

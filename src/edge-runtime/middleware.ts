@@ -6,6 +6,7 @@ import {
   BASE_URL as baseUrl,
 } from "./config";
 import { removeTrailingSlash } from "./removeTrailingSlash";
+import { resolveTrailingSlash } from "./resolveTrailingSlash";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   if (redirectDefaultLocale === false) {
@@ -19,26 +20,34 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
 
   const pathName = new URL(context.request.url).pathname;
 
-  let pathNameWithoutBaseUrl: string;
-  if (baseUrl === "/") {
-    // there is no baseUrl set
-    pathNameWithoutBaseUrl = pathName;
-  } else {
-    // remove trailingSlash from baseUrl if it exists
-    let baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
-    // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
-    pathNameWithoutBaseUrl = pathName.replace(baseUrlWithoutTrailingSlash, "");
-  }
+  // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
+  let pathNameWithoutBaseUrl =
+    baseUrl === "/"
+      ? pathName
+      : pathName.replace(baseUrlWithoutTrailingSlash, "");
+
+  const pathNameWithoutBaseUrlStartsWithDefaultLocale =
+    pathNameWithoutBaseUrl.slice(1, 3) === defaultLocale;
 
   // avoid catching urls that start with "/en" like "/enigma"
-  if (pathNameWithoutBaseUrl === "/" + defaultLocale) {
-    return context.redirect(pathName.replace("/" + defaultLocale, ""), status);
+  if (
+    pathNameWithoutBaseUrl.length === 3 &&
+    pathNameWithoutBaseUrlStartsWithDefaultLocale
+  ) {
+    return context.redirect(resolveTrailingSlash(baseUrl), status);
   }
   // catch all "/en/**/*" urls
-  if (pathNameWithoutBaseUrl.startsWith("/" + defaultLocale + "/")) {
+  if (
+    pathNameWithoutBaseUrl[0] === "/" &&
+    pathNameWithoutBaseUrl[3] === "/" &&
+    pathNameWithoutBaseUrlStartsWithDefaultLocale
+  ) {
     return context.redirect(
-      pathName.replace("/" + defaultLocale + "/", "/"),
+      resolveTrailingSlash(
+        baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3)
+      ),
       status
     );
   }

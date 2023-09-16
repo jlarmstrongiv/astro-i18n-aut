@@ -13,7 +13,6 @@ export function getUrlWithoutLocale(url: URL | string): string {
   // support both string and url objects
   const pathName = typeof url === "string" ? url : url.pathname;
 
-  // remove trailingSlash from baseUrl if it exists
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
   // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
