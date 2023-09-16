@@ -6,35 +6,40 @@ export function filterSitemapByDefaultLocale({
   base: baseUrl = "/",
 }: UserFilterSitemapByDefaultLocaleConfig) {
   // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
-  if (!baseUrl.startsWith("/")) {
+  if (baseUrl[0] !== "/") {
     baseUrl = "/" + baseUrl;
   }
+
+  const baseUrlWithoutTrailingSlash =
+    baseUrl.at(-1) === "/" ? baseUrl.slice(0, -1) : baseUrl;
 
   return function filter(page: string) {
     const pathName = new URL(page).pathname;
 
-    let pathNameWithoutBaseUrl: string;
-    if (baseUrl === "/") {
-      // there is no baseUrl set
-      pathNameWithoutBaseUrl = pathName;
-    } else {
-      // remove trailingSlash from baseUrl if it exists
-      let baseUrlWithoutTrailingSlash = baseUrl.endsWith("/")
-        ? baseUrl.slice(0, -1)
-        : baseUrl;
+    // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
+    let pathNameWithoutBaseUrl =
+      baseUrl === "/"
+        ? pathName
+        : pathName.replace(baseUrlWithoutTrailingSlash, "");
 
-      // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
-      pathNameWithoutBaseUrl = pathName.replace(
-        baseUrlWithoutTrailingSlash,
-        ""
-      );
+    const pathNameWithoutBaseUrlStartsWithDefaultLocale =
+      pathNameWithoutBaseUrl.slice(1, 3) === defaultLocale;
+
+    if (
+      pathNameWithoutBaseUrl.length === 3 &&
+      pathNameWithoutBaseUrlStartsWithDefaultLocale
+    ) {
+      return false;
+    }
+    // catch all "/en/**/*" urls
+    if (
+      pathNameWithoutBaseUrl[0] === "/" &&
+      pathNameWithoutBaseUrl[3] === "/" &&
+      pathNameWithoutBaseUrlStartsWithDefaultLocale
+    ) {
+      return false;
     }
 
-    return (
-      // avoid catching urls that start with "/en" like "/enigma"
-      pathNameWithoutBaseUrl !== "/" + defaultLocale &&
-      // catch all "/en/**/*" urls
-      !pathNameWithoutBaseUrl.startsWith("/" + defaultLocale + "/")
-    );
+    return true;
   };
 }
