@@ -1,9 +1,6 @@
 import { trailingSlash } from "./config";
 
 export function resolveTrailingSlash(url: string) {
-  if (url[0] !== "/") {
-    url = "/" + url;
-  }
   if (trailingSlash === "always") {
     if (url.at(-1) !== "/") {
       url = url + "/";

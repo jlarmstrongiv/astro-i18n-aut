@@ -5,6 +5,7 @@ import {
   redirectDefaultLocale,
   BASE_URL as baseUrl,
 } from "./config";
+import { removeTrailingSlash } from "./removeTrailingSlash";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   if (redirectDefaultLocale === false) {
@@ -24,9 +25,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
     pathNameWithoutBaseUrl = pathName;
   } else {
     // remove trailingSlash from baseUrl if it exists
-    let baseUrlWithoutTrailingSlash = baseUrl.endsWith("/")
-      ? baseUrl.slice(0, -1)
-      : baseUrl;
+    let baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
     // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
     pathNameWithoutBaseUrl = pathName.replace(baseUrlWithoutTrailingSlash, "");
