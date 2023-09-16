@@ -50,7 +50,11 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
       [defaultLocale]: resolveTrailingSlash(baseUrl),
     };
   }
-  if (pathNameWithoutBaseUrlStartsWithLocale) {
+  if (
+    pathNameWithoutBaseUrl[0] === "/" &&
+    pathNameWithoutBaseUrl[3] === "/" &&
+    pathNameWithoutBaseUrlStartsWithLocale
+  ) {
     // catch all "/fr/**/*" original urls
     return {
       ...localeKeys.reduce<Record<string, string>>((record, locale) => {

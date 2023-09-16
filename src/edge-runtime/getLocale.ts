@@ -46,7 +46,11 @@ export function getLocale(url: URL | string): string {
   ) {
     return possibleLocaleKey;
   }
-  if (pathNameWithoutBaseUrlStartsWithLocale) {
+  if (
+    pathNameWithoutBaseUrl[0] === "/" &&
+    pathNameWithoutBaseUrl[3] === "/" &&
+    pathNameWithoutBaseUrlStartsWithLocale
+  ) {
     // catch all "/fr/**/*" urls
     return possibleLocaleKey;
   }

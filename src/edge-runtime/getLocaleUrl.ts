@@ -67,7 +67,11 @@ export function getLocaleUrl(url: URL | string, locale: string): string {
       baseUrlWithoutTrailingSlash + "/" + locale + "/"
     );
   }
-  if (pathNameWithoutBaseUrlStartsWithLocale) {
+  if (
+    pathNameWithoutBaseUrl[0] === "/" &&
+    pathNameWithoutBaseUrl[3] === "/" &&
+    pathNameWithoutBaseUrlStartsWithLocale
+  ) {
     // catch all "/fr/**/*" original urls
     if (locale === defaultLocale) {
       return resolveTrailingSlash(
