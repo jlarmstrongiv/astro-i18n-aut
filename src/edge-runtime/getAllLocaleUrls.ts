@@ -38,7 +38,10 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
     }
   }
   if (trailingSlash === "never") {
-    if (pathNameWithoutBaseUrl.endsWith("/")) {
+    if (
+      pathNameWithoutBaseUrl !== "/" &&
+      pathNameWithoutBaseUrl.endsWith("/")
+    ) {
       pathNameWithoutBaseUrl = pathNameWithoutBaseUrl.slice(0, -1);
     }
   }

@@ -28,7 +28,10 @@ export function getUrlWithoutLocale(url: URL | string): string {
     }
   }
   if (trailingSlash === "never") {
-    if (pathNameWithoutBaseUrl.endsWith("/")) {
+    if (
+      pathNameWithoutBaseUrl !== "/" &&
+      pathNameWithoutBaseUrl.endsWith("/")
+    ) {
       pathNameWithoutBaseUrl = pathNameWithoutBaseUrl.slice(0, -1);
     }
   }
@@ -56,7 +59,7 @@ export function getUrlWithoutLocale(url: URL | string): string {
     }
   }
   if (trailingSlash === "never") {
-    if (pathName.endsWith("/")) {
+    if (pathName !== "/" && pathName.endsWith("/")) {
       return pathName.slice(0, -1);
     }
   }

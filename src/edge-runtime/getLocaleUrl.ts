@@ -57,7 +57,10 @@ export function getLocaleUrl(url: URL | string, locale: string): string {
     }
   }
   if (trailingSlash === "never") {
-    if (pathNameWithoutBaseUrl.endsWith("/")) {
+    if (
+      pathNameWithoutBaseUrl !== "/" &&
+      pathNameWithoutBaseUrl.endsWith("/")
+    ) {
       pathNameWithoutBaseUrl = pathNameWithoutBaseUrl.slice(0, -1);
     }
   }
