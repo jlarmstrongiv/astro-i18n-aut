@@ -4,6 +4,7 @@ import {
   localeKeys,
   defaultLocale,
 } from "./config";
+import { removeTrailingSlash } from "./removeTrailingSlash";
 
 /**
  * @returns locale prefix or an empty string if defaultLocale
@@ -26,9 +27,7 @@ export function getLocaleUrlPrefix(url: URL | string): string {
     pathNameWithoutBaseUrl = pathName;
   } else {
     // remove trailingSlash from baseUrl if it exists
-    let baseUrlWithoutTrailingSlash = baseUrl.endsWith("/")
-      ? baseUrl.slice(0, -1)
-      : baseUrl;
+    let baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
     // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
     pathNameWithoutBaseUrl = pathName.replace(baseUrlWithoutTrailingSlash, "");
@@ -46,7 +45,7 @@ export function getLocaleUrlPrefix(url: URL | string): string {
   ) {
     return "/" + possibleLocaleKey;
   }
-  if (pathNameWithoutBaseUrl[0] === "/" && pathNameWithoutBaseUrl[3] === "/") {
+  if (pathNameWithoutBaseUrlStartsWithLocale) {
     // catch all "/fr/**/*" urls
     return "/" + possibleLocaleKey;
   }

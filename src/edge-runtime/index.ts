@@ -14,6 +14,7 @@ export { getLocale } from "./getLocale";
 export { getLocaleUrl } from "./getLocaleUrl";
 export { getLocaleUrlPrefix } from "./getLocaleUrlPrefix";
 export { getUrlWithoutLocale } from "./getUrlWithoutLocale";
+export { resolveTrailingSlash } from "./resolveTrailingSlash";
 export { defaultI18nConfig } from "../shared";
 export type {
   UserI18nConfig,

@@ -49,7 +49,7 @@ function getBaseUrl(config: AstroConfig): string {
   let base = config.base;
 
   // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
-  if (!base.startsWith("/")) {
+  if (base[0] !== "/") {
     base = "/" + base;
   }
 
@@ -62,13 +62,11 @@ function getBaseUrl(config: AstroConfig): string {
   // BASE_URL will not include a trailing slash,
   // even if base includes one.
   if (config.trailingSlash === "always") {
-    if (!base.endsWith("/")) {
+    if (base.at(-1) !== "/") {
       base = base + "/";
     }
-  }
-
-  if (config.trailingSlash === "ignore") {
-    if (base.endsWith("/")) {
+  } else if (config.trailingSlash === "never") {
+    if (base !== "/" && base.at(-1) === "/") {
       base = base.slice(0, -1);
     }
   }

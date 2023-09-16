@@ -3,8 +3,9 @@ import {
   BASE_URL as baseUrl,
   defaultLocale,
   localeKeys,
-  trailingSlash,
 } from "./config";
+import { resolveTrailingSlash } from "./resolveTrailingSlash";
+import { removeTrailingSlash } from "./removeTrailingSlash";
 /**
  * @returns url with chosen locale prefix
  *  * @example
@@ -21,30 +22,13 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
   const pathName = typeof url === "string" ? url : url.pathname;
 
   // remove trailingSlash from baseUrl if it exists
-  const baseUrlWithoutTrailingSlash = baseUrl.endsWith("/")
-    ? baseUrl.slice(0, -1)
-    : baseUrl;
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
   // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
   let pathNameWithoutBaseUrl =
     baseUrl === "/"
       ? pathName
       : pathName.replace(baseUrlWithoutTrailingSlash, "");
-
-  // ensure consistent trailing slash
-  if (trailingSlash === "always") {
-    if (!pathNameWithoutBaseUrl.endsWith("/")) {
-      pathNameWithoutBaseUrl = pathNameWithoutBaseUrl + "/";
-    }
-  }
-  if (trailingSlash === "never") {
-    if (
-      pathNameWithoutBaseUrl !== "/" &&
-      pathNameWithoutBaseUrl.endsWith("/")
-    ) {
-      pathNameWithoutBaseUrl = pathNameWithoutBaseUrl.slice(0, -1);
-    }
-  }
 
   const possibleLocaleKey = pathNameWithoutBaseUrl.slice(1, 3);
   const pathNameWithoutBaseUrlStartsWithLocale = localeKeys
@@ -58,37 +42,42 @@ export function getAllLocaleUrls(url: URL | string): Record<string, string> {
   ) {
     return {
       ...localeKeys.reduce<Record<string, string>>((record, locale) => {
-        record[locale] = baseUrl.endsWith("/")
-          ? baseUrlWithoutTrailingSlash + "/" + locale + "/"
-          : baseUrlWithoutTrailingSlash + "/" + locale;
+        record[locale] = resolveTrailingSlash(
+          baseUrlWithoutTrailingSlash + "/" + locale + "/"
+        );
         return record;
       }, {}),
-      [defaultLocale]: baseUrl,
+      [defaultLocale]: resolveTrailingSlash(baseUrl),
     };
   }
-  if (pathNameWithoutBaseUrl[0] === "/" && pathNameWithoutBaseUrl[3] === "/") {
+  if (pathNameWithoutBaseUrlStartsWithLocale) {
     // catch all "/fr/**/*" original urls
     return {
       ...localeKeys.reduce<Record<string, string>>((record, locale) => {
-        record[locale] =
+        record[locale] = resolveTrailingSlash(
           baseUrlWithoutTrailingSlash +
-          "/" +
-          locale +
-          pathNameWithoutBaseUrl.slice(3);
+            "/" +
+            locale +
+            pathNameWithoutBaseUrl.slice(3)
+        );
         return record;
       }, {}),
-      [defaultLocale]:
-        baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3),
+      [defaultLocale]: resolveTrailingSlash(
+        baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3)
+      ),
     };
   }
 
   // otherwise, original url must be a defaultLocale or other url
   return {
     ...localeKeys.reduce<Record<string, string>>((record, locale) => {
-      record[locale] =
-        baseUrlWithoutTrailingSlash + "/" + locale + pathNameWithoutBaseUrl;
+      record[locale] = resolveTrailingSlash(
+        baseUrlWithoutTrailingSlash + "/" + locale + pathNameWithoutBaseUrl
+      );
       return record;
     }, {}),
-    [defaultLocale]: baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl,
+    [defaultLocale]: resolveTrailingSlash(
+      baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl
+    ),
   };
 }
