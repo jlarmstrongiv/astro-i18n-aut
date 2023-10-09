@@ -78,6 +78,6 @@ type PartialFieldsOnly<T> = {
  */
 export const defaultI18nConfig: Required<PartialFieldsOnly<UserI18nConfig>> = {
   include: ["pages/**/*"],
-  exclude: ["pages/api/**/*"],
+  exclude: ["pages/_*", "pages/_*/**/*", "pages/api/**/*"],
   redirectDefaultLocale: 308,
 };
