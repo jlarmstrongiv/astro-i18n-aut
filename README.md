@@ -210,7 +210,7 @@ cannot be translated. If you choose to use them in the `pages` directory, please
 
 #### Excluding pages
 
-In [Astro](https://docs.astro.build/en/core-concepts/routing/), the docs state:
+In Astro, the [docs](https://docs.astro.build/en/core-concepts/routing/#excluding-pages) state:
 
 > You can exclude pages or directories from being built by prefixing their names with an underscore (_). Files with the _ prefix won’t be recognized by the router and won’t be placed into the dist/ directory.
 >
@@ -218,7 +218,7 @@ In [Astro](https://docs.astro.build/en/core-concepts/routing/), the docs state:
 
 Unfortunately, this [excluding pages](https://docs.astro.build/en/core-concepts/routing/#excluding-pages) feature is not supported. Please only keep pages in your pages directory.
 
-You can still exclude pages prefixed with an underscore (`_`) by adding `pages/api/**/*` to the ignore glob patterns:
+You can still exclude pages prefixed with an underscore (`_`) by adding `pages/**/_*` to the ignore glob patterns:
 
 ```js
 ["pages/api/**/*", "pages/**/_*"];
