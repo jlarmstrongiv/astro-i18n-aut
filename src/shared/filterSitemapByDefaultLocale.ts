@@ -1,3 +1,4 @@
+import { removeHtmlExtension } from "../edge-runtime/removeHtmlExtension";
 import type { UserFilterSitemapByDefaultLocaleConfig } from "./configs";
 
 // sitemap filter https://docs.astro.build/en/guides/integrations-guide/sitemap/#filter
@@ -15,12 +16,13 @@ export function filterSitemapByDefaultLocale({
 
   return function filter(page: string) {
     const pathName = new URL(page).pathname;
+    const pathNameWithoutHtmlExtension = removeHtmlExtension(pathName);
 
     // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
     let pathNameWithoutBaseUrl =
       baseUrl === "/"
-        ? pathName
-        : pathName.replace(baseUrlWithoutTrailingSlash, "");
+        ? pathNameWithoutHtmlExtension
+        : pathNameWithoutHtmlExtension.replace(baseUrlWithoutTrailingSlash, "");
 
     const pathNameWithoutBaseUrlStartsWithDefaultLocale =
       pathNameWithoutBaseUrl.slice(1, 3) === defaultLocale;

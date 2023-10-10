@@ -4,6 +4,7 @@ import {
   defaultLocale,
   localeKeys,
 } from "./config";
+import { removeHtmlExtension } from "./removeHtmlExtension";
 import { removeTrailingSlash } from "./removeTrailingSlash";
 
 /**
@@ -20,6 +21,7 @@ import { removeTrailingSlash } from "./removeTrailingSlash";
 export function getLocale(url: URL | string): string {
   // support both string and url objects
   const pathName = typeof url === "string" ? url : url.pathname;
+  const pathNameWithoutHtmlExtension = removeHtmlExtension(pathName);
   // astro `BASE_URL` always starts with `/` and respects `config.trailingSlash`
 
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
@@ -27,8 +29,8 @@ export function getLocale(url: URL | string): string {
   // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
   let pathNameWithoutBaseUrl =
     baseUrl === "/"
-      ? pathName
-      : pathName.replace(baseUrlWithoutTrailingSlash, "");
+      ? pathNameWithoutHtmlExtension
+      : pathNameWithoutHtmlExtension.replace(baseUrlWithoutTrailingSlash, "");
 
   const possibleLocaleKey = pathNameWithoutBaseUrl.slice(1, 3);
   const pathNameWithoutBaseUrlStartsWithLocale = localeKeys

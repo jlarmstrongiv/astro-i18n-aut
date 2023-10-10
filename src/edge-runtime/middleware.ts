@@ -7,6 +7,7 @@ import {
 } from "./config";
 import { removeTrailingSlash } from "./removeTrailingSlash";
 import { resolveTrailingSlash } from "./resolveTrailingSlash";
+import { removeHtmlExtension } from "./removeHtmlExtension";
 
 export const i18nMiddleware = defineMiddleware((context, next) => {
   if (redirectDefaultLocale === false) {
@@ -19,14 +20,15 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
   }
 
   const pathName = new URL(context.request.url).pathname;
+  const pathNameWithoutHtmlExtension = removeHtmlExtension(pathName);
 
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
   // remove baseUrlWithoutTrailingSlash from pathNameWithoutBaseUrl
   let pathNameWithoutBaseUrl =
     baseUrl === "/"
-      ? pathName
-      : pathName.replace(baseUrlWithoutTrailingSlash, "");
+      ? pathNameWithoutHtmlExtension
+      : pathNameWithoutHtmlExtension.replace(baseUrlWithoutTrailingSlash, "");
 
   const pathNameWithoutBaseUrlStartsWithDefaultLocale =
     pathNameWithoutBaseUrl.slice(1, 3) === defaultLocale;
