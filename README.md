@@ -190,6 +190,10 @@ If you choose `/about/`, then `/about` will 404 and vice versa.
 - `include`: Glob pattern(s) to include (default: `["pages/**/*"]`).
 - `exclude`: Glob pattern(s) to exclude (default: `["pages/api/**/*"]`).
 
+### Compatibility
+
+#### Page file types
+
 Other Astro page file types:
 
 - ✅ `.astro`
@@ -198,7 +202,27 @@ Other Astro page file types:
 - ❌ `.html`
 - ❌ `.js` / `.ts` (as endpoints)
 
-cannot be translated. If you choose to use them in the `pages` directory, please add them to the ignore glob patterns. For example, `["pages/api/**/*", "pages/**/*.md"]`
+cannot be translated. If you choose to use them in the `pages` directory, please add them to the ignore glob patterns. For example:
+
+```js
+["pages/api/**/*", "pages/**/*.md"];
+```
+
+#### Excluding pages
+
+In [Astro](https://docs.astro.build/en/core-concepts/routing/), the docs state:
+
+> You can exclude pages or directories from being built by prefixing their names with an underscore (_). Files with the _ prefix won’t be recognized by the router and won’t be placed into the dist/ directory.
+>
+> You can use this to temporarily disable pages, and also to put tests, utilities, and components in the same folder as their related pages.
+
+Unfortunately, this [excluding pages](https://docs.astro.build/en/core-concepts/routing/#excluding-pages) feature is not supported. Please only keep pages in your pages directory.
+
+You can still exclude pages prefixed with an underscore (`_`) by adding `pages/api/**/*` to the ignore glob patterns:
+
+```js
+["pages/api/**/*", "pages/**/_*"];
+```
 
 #### Markdown
 
