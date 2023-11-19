@@ -81,15 +81,6 @@ export default defineConfig({
 });
 ```
 
-In your Astro [middleware](https://docs.astro.build/en/guides/middleware/#chaining-middleware) file:
-
-```ts
-import { sequence } from "astro/middleware";
-import { i18nMiddleware } from "astro-i18n-aut";
-
-export const onRequest = sequence(i18nMiddleware);
-```
-
 In your `.gitignore` file:
 
 ```gitignore
@@ -104,7 +95,7 @@ Now that you have set up the config, each `.astro` page will have additional ren
 - `/es/about/`
 - `/fr/about/`
 
-If you have enabled `redirectDefaultLocale` (`true` by default) in the integration and middleware, redirects will be:
+If you have enabled `redirectDefaultLocale` (`true` by default), redirects will be:
 
 - `/en/about/` => `/about/`
 

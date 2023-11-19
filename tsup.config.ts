@@ -8,7 +8,11 @@ export default defineConfig(async (options) => {
     ...options,
     clean: true,
     dts: false,
-    entry: ["src/integration/index.ts", "src/edge-runtime/index.ts"],
+    entry: [
+      "src/integration/index.ts",
+      "src/edge-runtime/index.ts",
+      "src/middleware/index.ts",
+    ],
     format: ["esm", "cjs"],
     // FUTURE: incremental builds when implemented https://github.com/egoist/tsup/issues/615
     // incremental: !options.watch,

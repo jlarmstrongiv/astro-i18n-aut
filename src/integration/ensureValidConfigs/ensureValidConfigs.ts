@@ -2,7 +2,6 @@ import type { AstroConfig, AstroIntegrationLogger } from "astro";
 import type { UpdateConfig } from "./UpdateConfig";
 import type { I18nConfig } from "../../shared/configs";
 import { ensureValidTrailingSlashAndFormat } from "./ensureValidTrailingSlashAndFormat";
-import { ensureValidRedirectMiddleware } from "./ensureValidRedirectMiddleware";
 import { createVirtualModules } from "./createVirtualModules";
 
 export async function ensureValidConfigs(
@@ -12,6 +11,5 @@ export async function ensureValidConfigs(
   logger: AstroIntegrationLogger
 ) {
   ensureValidTrailingSlashAndFormat(config, updateConfig, logger);
-  await ensureValidRedirectMiddleware(config, i18nConfig, logger);
   createVirtualModules(config, updateConfig, i18nConfig);
 }

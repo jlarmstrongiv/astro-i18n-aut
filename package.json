@@ -31,6 +31,9 @@
       ],
       "integration": [
         "./dist/integration/index.d.ts"
+      ],
+      "middleware": [
+        "./dist/middleware/index.d.ts"
       ]
     }
   },
@@ -44,6 +47,11 @@
       "types": "./dist/integration/index.d.ts",
       "require": "./dist/integration/index.cjs",
       "import": "./dist/integration/index.js"
+    },
+    "./middleware": {
+      "types": "./dist/middleware/index.d.ts",
+      "require": "./dist/middleware/index.cjs",
+      "import": "./dist/middleware/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -68,7 +76,7 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "astro": "^3.0.4",
+    "astro": "^3.5.5",
     "kleur": "^4.1.4"
   }
 }

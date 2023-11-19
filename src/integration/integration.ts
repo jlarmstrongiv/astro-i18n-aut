@@ -38,12 +38,18 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
       "astro:config:setup": async ({
         config,
         updateConfig,
+        addMiddleware,
         command,
         injectRoute,
         logger,
       }) => {
         ensureValidLocales(locales, defaultLocale, logger);
         await ensureValidConfigs(config, updateConfig, i18nConfig, logger);
+        addMiddleware({
+          entrypoint: "astro-i18n-aut/middleware",
+          order: "pre",
+        });
+
         const configSrcDirPathname = path.normalize(
           removeLeadingForwardSlashWindows(config.srcDir.pathname)
         );

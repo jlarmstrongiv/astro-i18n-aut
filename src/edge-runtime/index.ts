@@ -6,7 +6,6 @@ export {
   build,
   BASE_URL,
 } from "./config";
-export { i18nMiddleware } from "./middleware";
 export { filterCollectionByDefaultLocale } from "./filterCollectionByDefaultLocale";
 export { getCollectionParamsSlug } from "./getCollectionParamsSlug";
 export { getAllLocaleUrls } from "./getAllLocaleUrls";
