@@ -120,7 +120,7 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
               continue;
             }
 
-            const entryPoint =
+            const entrypoint =
               command === "build"
                 ? path.join(pagesPathTmp[locale], relativePath, parsedPath.base)
                 : path.join(pagesPath, relativePath, parsedPath.base);
@@ -136,7 +136,8 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
             );
 
             injectRoute({
-              entryPoint,
+              entryPoint: entrypoint, // fallback for Astro v3
+              entrypoint,
               pattern,
             });
           }
