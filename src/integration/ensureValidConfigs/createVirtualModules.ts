@@ -1,5 +1,4 @@
 import type { AstroConfig } from "astro";
-import { defineConfig } from "astro/config";
 import { UpdateConfig } from "./UpdateConfig";
 import type {
   I18nConfig,
@@ -28,21 +27,19 @@ export function createVirtualModules(
     virtualAstroi18nautConfig
   );
 
-  updateConfig(
-    defineConfig({
-      vite: {
+  updateConfig({
+    vite: {
+      plugins: [virtualPlugin],
+      // worker plugins are separate https://github.com/vitejs/vite/issues/8520
+      worker: {
         plugins: [virtualPlugin],
-        // worker plugins are separate https://github.com/vitejs/vite/issues/8520
-        worker: {
-          plugins: [virtualPlugin],
-        },
-        // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
-        optimizeDeps: {
-          exclude: ["virtual:astro-i18n-aut"],
-        },
       },
-    })
-  );
+      // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
+      optimizeDeps: {
+        exclude: ["virtual:astro-i18n-aut"],
+      },
+    },
+  });
 }
 
 function getBaseUrl(config: AstroConfig): string {

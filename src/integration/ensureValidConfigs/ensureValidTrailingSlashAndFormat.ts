@@ -1,5 +1,4 @@
 import type { AstroConfig, AstroIntegrationLogger } from "astro";
-import { defineConfig } from "astro/config";
 import type { UpdateConfig } from "./UpdateConfig";
 
 export function ensureValidTrailingSlashAndFormat(
@@ -18,36 +17,30 @@ export function ensureValidTrailingSlashAndFormat(
       `config.trailingSlash = "never" && config.build.format = "file"`
     );
     logger.warn(`setting config.trailingSlash = "${config.trailingSlash}"`);
-    updateConfig(
-      defineConfig({
-        trailingSlash: config.build.format === "directory" ? "always" : "never",
-      })
-    );
+    updateConfig({
+      trailingSlash: config.build.format === "directory" ? "always" : "never",
+    });
   }
   if (config.trailingSlash === "always" && config.build.format === "file") {
     logger.warn(
       `config.trailingSlash = "always" must always be used with config.build.format = "directory"`
     );
     logger.warn(`setting config.build.format = "directory"`);
-    updateConfig(
-      defineConfig({
-        build: {
-          format: "directory",
-        },
-      })
-    );
+    updateConfig({
+      build: {
+        format: "directory",
+      },
+    });
   }
   if (config.trailingSlash === "never" && config.build.format === "directory") {
     logger.warn(
       `config.trailingSlash = "never" must always be used with config.build.format = "file"`
     );
     logger.warn(`setting config.build.format = "file"`);
-    updateConfig(
-      defineConfig({
-        build: {
-          format: "file",
-        },
-      })
-    );
+    updateConfig({
+      build: {
+        format: "file",
+      },
+    });
   }
 }
