@@ -79,7 +79,10 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
           await Promise.all(
             Object.keys(locales)
               .filter((locale) => {
-                if (redirectDefaultLocale === false) {
+                if (
+                  redirectDefaultLocale === false ||
+                  config.output === "server"
+                ) {
                   return locale !== defaultLocale;
                 } else {
                   return true;
@@ -115,8 +118,11 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
           }
 
           for (const locale of Object.keys(locales)) {
-            // ignore defaultLocale if redirectDefaultLocale is false
-            if (redirectDefaultLocale === false && locale === defaultLocale) {
+            // ignore defaultLocale if redirectDefaultLocale is false or if using SSR
+            if (
+              (redirectDefaultLocale === false || config.output === "server") &&
+              locale === defaultLocale
+            ) {
               continue;
             }
 
