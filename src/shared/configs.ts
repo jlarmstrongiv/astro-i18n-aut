@@ -63,7 +63,7 @@ export type UserFilterSitemapByDefaultLocaleConfig = Pick<
   UserI18nConfig,
   "defaultLocale"
 > & {
-  base: string;
+  base?: string;
 };
 
 export type I18nConfig = Required<UserI18nConfig>;
