@@ -1,4 +1,5 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { AstroIntegration, AstroIntegrationLogger } from "astro";
 import fg from "fast-glob";
 import fs from "fs-extra";
@@ -50,9 +51,7 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
           order: "pre",
         });
 
-        const configSrcDirPathname = path.normalize(
-          removeLeadingForwardSlashWindows(config.srcDir.pathname)
-        );
+        const configSrcDirPathname = fileURLToPath(config.srcDir);
 
         let included: string[] = ensureGlobsHaveConfigSrcDirPathname(
           typeof include === "string" ? [include] : include,
