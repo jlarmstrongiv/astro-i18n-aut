@@ -19,7 +19,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
     status = redirectDefaultLocale;
   }
 
-  const pathName = new URL(context.request.url).pathname;
+  const { pathname: pathName, search } = new URL(context.request.url);
   const pathNameWithoutHtmlExtension = removeHtmlExtension(pathName);
 
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
@@ -38,7 +38,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
     pathNameWithoutBaseUrl.length === 3 &&
     pathNameWithoutBaseUrlStartsWithDefaultLocale
   ) {
-    return context.redirect(resolveTrailingSlash(baseUrl), status);
+    return context.redirect(resolveTrailingSlash(baseUrl) + search, status);
   }
   // catch all "/en/**/*" urls
   if (
@@ -49,7 +49,7 @@ export const i18nMiddleware = defineMiddleware((context, next) => {
     return context.redirect(
       resolveTrailingSlash(
         baseUrlWithoutTrailingSlash + pathNameWithoutBaseUrl.slice(3)
-      ),
+      ) + search,
       status
     );
   }
