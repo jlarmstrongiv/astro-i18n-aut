@@ -59,6 +59,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsup-node",
     "watch": "tsup-node --watch"
   },
