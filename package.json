@@ -71,12 +71,12 @@
   "devDependencies": {
     "@types/dedent": "^0.7.0",
     "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.5.7",
+    "@types/node": "^22.0.0",
     "tsup": "^8.0.1",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "astro": "^4.0.3",
+    "astro": "^5.0.0",
     "kleur": "^4.1.4"
   }
 }
