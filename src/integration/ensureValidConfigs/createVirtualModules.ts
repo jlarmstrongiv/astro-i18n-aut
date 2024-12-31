@@ -32,7 +32,7 @@ export function createVirtualModules(
       plugins: [virtualPlugin],
       // worker plugins are separate https://github.com/vitejs/vite/issues/8520
       worker: {
-        plugins: [virtualPlugin],
+        plugins: () => [virtualPlugin],
       },
       // exclude virtual modules from optimizeDeps https://github.com/storybookjs/builder-vite/issues/311#issuecomment-1092577628
       optimizeDeps: {
