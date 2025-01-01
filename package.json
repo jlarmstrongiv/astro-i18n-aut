@@ -63,20 +63,19 @@
     "watch": "tsup-node --watch"
   },
   "dependencies": {
-    "dedent": "^1.5.1",
-    "fast-glob": "^3.3.1",
-    "fs-extra": "^11.1.1",
+    "dedent": "^1.5.3",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
     "slash": "^5.1.0"
   },
   "devDependencies": {
-    "@types/dedent": "^0.7.0",
-    "@types/fs-extra": "^11.0.1",
-    "@types/node": "^22.0.0",
-    "tsup": "^8.0.1",
-    "typescript": "^5.2.2"
+    "@types/dedent": "^0.7.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.10.3",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   },
   "peerDependencies": {
-    "astro": "^4.0.3",
-    "kleur": "^4.1.4"
+    "astro": "^5.0.0"
   }
 }
