@@ -30,8 +30,5 @@ jobs:
         run: npm run build
 
       - name: Publish package on NPM 📦
-        run: |
-          npm config set "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" --location=user
-          npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # auth via npm trusted publishing (OIDC), no token needed
+        run: npm publish
