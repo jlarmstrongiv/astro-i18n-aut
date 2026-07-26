@@ -11,6 +11,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # allow npm trusted publishing (OIDC), preferred over NPM_TOKEN when configured
+      id-token: write
     steps:
       - name: Checkout git repository 🛒
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
