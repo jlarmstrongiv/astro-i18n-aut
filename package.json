@@ -39,19 +39,34 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/edge-runtime/index.d.ts",
-      "require": "./dist/edge-runtime/index.cjs",
-      "import": "./dist/edge-runtime/index.js"
+      "import": {
+        "types": "./dist/edge-runtime/index.d.ts",
+        "default": "./dist/edge-runtime/index.js"
+      },
+      "require": {
+        "types": "./dist/edge-runtime/index.d.cts",
+        "default": "./dist/edge-runtime/index.cjs"
+      }
     },
     "./integration": {
-      "types": "./dist/integration/index.d.ts",
-      "require": "./dist/integration/index.cjs",
-      "import": "./dist/integration/index.js"
+      "import": {
+        "types": "./dist/integration/index.d.ts",
+        "default": "./dist/integration/index.js"
+      },
+      "require": {
+        "types": "./dist/integration/index.d.cts",
+        "default": "./dist/integration/index.cjs"
+      }
     },
     "./middleware": {
-      "types": "./dist/middleware/index.d.ts",
-      "require": "./dist/middleware/index.cjs",
-      "import": "./dist/middleware/index.js"
+      "import": {
+        "types": "./dist/middleware/index.d.ts",
+        "default": "./dist/middleware/index.js"
+      },
+      "require": {
+        "types": "./dist/middleware/index.d.cts",
+        "default": "./dist/middleware/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -59,8 +74,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup-node",
-    "watch": "tsup-node --watch"
+    "build": "tsdown",
+    "watch": "tsdown --watch"
   },
   "dependencies": {
     "dedent": "^1.7.2",
@@ -69,14 +84,14 @@
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
-    "tsup": "^8.5.1",
-    "typescript": "^6.0.3"
+    "tsdown": "^0.22.4",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "astro": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
-    "esbuild@0.27.7": true
+    "fsevents@2.3.3": true
   }
 }
