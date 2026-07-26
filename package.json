@@ -1,6 +1,6 @@
 {
   "name": "astro-i18n-aut",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "private": false,
   "description": "The i18n integration for Astro 🧑‍🚀",
   "keywords": [
@@ -63,19 +63,20 @@
     "watch": "tsup-node --watch"
   },
   "dependencies": {
-    "dedent": "^1.5.3",
-    "fast-glob": "^3.3.2",
-    "fs-extra": "^11.2.0",
+    "dedent": "^1.7.2",
+    "fast-glob": "^3.3.3",
     "slash": "^5.1.0"
   },
   "devDependencies": {
-    "@types/dedent": "^0.7.2",
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.10.3",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "@types/node": "^24.13.3",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
-    "astro": "^5.0.0"
+    "astro": "^5.0.0 || ^6.0.0 || ^7.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.27.7": true
   }
 }

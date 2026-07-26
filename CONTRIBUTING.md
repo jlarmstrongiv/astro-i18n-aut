@@ -27,8 +27,7 @@ Astro does not easily support two pages having the same content:
 - Route variables `/[lang]/about` cannot be undefined or an empty string
 - Middleware `request.url` is read-only, so it is not possible to retrieve content from a different url
 - Configured redirects do not support route transitions like `'/article': '/blog/[...slug]'`, only `'/blog/[...slug]': '/articles/[...slug]'`
-- The `injectRoute` method cannot inject an `entrypoint` that is already being used in the build command
 
-We duplicate the `src/pages` folder multiple times and use `injectRoute` as a workaround. You can safely delete any `src/astro_tmp_pages_LOCALE` folders, but those will be automatically cleaned on every started and completed build.
+We use `injectRoute` to add one route per locale for every page in `src/pages`. Older versions of Astro could not inject an `entrypoint` that was already being used in the build command ([withastro/astro#5096](https://github.com/withastro/astro/issues/5096)), which required temporarily duplicating the `src/pages` folder per locale during builds. That has since been fixed, so routes are now injected directly from the original page files.
 
-Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects) for non-existent routes, so middleware must be used with `src/astro_tmp_pages_DEFAULTLOCALE` to create redirects.
+Astro also does not support [Configured Redirects](https://docs.astro.build/en/core-concepts/routing/#configured-redirects) for non-existent routes, so middleware must be used to create redirects.

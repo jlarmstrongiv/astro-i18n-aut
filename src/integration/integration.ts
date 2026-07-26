@@ -2,15 +2,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AstroIntegration, AstroIntegrationLogger } from "astro";
 import fg from "fast-glob";
-import fs from "fs-extra";
 import slash from "slash";
 import { removeLeadingForwardSlashWindows } from "../astro/internal-helpers/path";
 import { defaultI18nConfig } from "../shared/configs";
 import type { UserI18nConfig, I18nConfig } from "../shared/configs";
 import { ensureValidConfigs } from "./ensureValidConfigs";
-
-// injectRoute doesn't generate build pages https://github.com/withastro/astro/issues/5096
-// workaround: copy pages folder when command === "build"
 
 /**
  * The i18n integration for Astro
@@ -26,13 +22,6 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
   const { defaultLocale, locales, exclude, include, redirectDefaultLocale } =
     i18nConfig;
 
-  let pagesPathTmp: Record<string, string> = {};
-  async function removePagesPathTmp(): Promise<void> {
-    await Promise.all(
-      Object.values(pagesPathTmp).map((pagePathTmp) => fs.remove(pagePathTmp))
-    );
-  }
-
   return {
     name: "astro-i18n-integration",
     hooks: {
@@ -40,7 +29,6 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
         config,
         updateConfig,
         addMiddleware,
-        command,
         injectRoute,
         logger,
       }) => {
@@ -63,33 +51,6 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
         );
 
         const pagesPath = path.join(configSrcDirPathname, "pages");
-
-        const pagesPathTmpRoot = path.join(
-          configSrcDirPathname,
-          // tmp filename from https://github.com/withastro/astro/blob/e6bff651ff80466b3e862e637d2a6a3334d8cfda/packages/astro/src/core/routing/manifest/create.ts#L279
-          "astro_tmp_pages"
-        );
-        for (const locale of Object.keys(locales)) {
-          pagesPathTmp[locale] = `${pagesPathTmpRoot}_${locale}`;
-        }
-
-        await removePagesPathTmp();
-        if (command === "build") {
-          await Promise.all(
-            Object.keys(locales)
-              .filter((locale) => {
-                if (
-                  redirectDefaultLocale === false ||
-                  config.output === "server"
-                ) {
-                  return locale !== defaultLocale;
-                } else {
-                  return true;
-                }
-              })
-              .map((locale) => fs.copy(pagesPath, pagesPathTmp[locale]))
-          );
-        }
 
         const entries = fg.stream(included, {
           ignore: excluded,
@@ -125,10 +86,11 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
               continue;
             }
 
-            const entrypoint =
-              command === "build"
-                ? path.join(pagesPathTmp[locale], relativePath, parsedPath.base)
-                : path.join(pagesPath, relativePath, parsedPath.base);
+            const entrypoint = path.join(
+              pagesPath,
+              relativePath,
+              parsedPath.base
+            );
 
             const pattern = slash(
               path.join(
@@ -146,12 +108,6 @@ export function i18n(userI18nConfig: UserI18nConfig): AstroIntegration {
             });
           }
         }
-      },
-      "astro:build:done": async () => {
-        await removePagesPathTmp();
-      },
-      "astro:server:done": async () => {
-        await removePagesPathTmp();
       },
     },
   };

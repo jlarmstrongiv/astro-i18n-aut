@@ -1,0 +1,6 @@
+[settings]
+# supply chain safety: only install tool versions at least 14 days old
+minimum_release_age = "14d"
+
+[tools]
+node = "24.18.0"

@@ -81,12 +81,6 @@ export default defineConfig({
 });
 ```
 
-In your `.gitignore` file:
-
-```gitignore
-astro_tmp_pages_*
-```
-
 ### Usage
 
 Now that you have set up the config, each `.astro` page will have additional renders with your other languages. For example, `src/pages/about.astro` will render as:

@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["dom", "ES2017"],
+    "lib": ["dom", "ES2022"],
     "allowJs": false,
-    "baseUrl": "./",
+    "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsxImportSource": "react",
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
