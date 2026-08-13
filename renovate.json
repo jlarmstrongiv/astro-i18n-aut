@@ -1,5 +1,7 @@
 {
   "bumpVersion": "patch",
+  "minimumReleaseAge": "14 days",
+  "internalChecksFilter": "strict",
   "extends": [
     "config:base",
     "group:allNonMajor",
