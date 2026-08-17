@@ -3,4 +3,4 @@
 minimum_release_age = "14d"
 
 [tools]
-node = "24.18.1"
+node = "24.19.0"
