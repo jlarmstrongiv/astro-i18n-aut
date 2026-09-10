@@ -1,6 +1,6 @@
 {
   "name": "astro-i18n-aut",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": false,
   "description": "The i18n integration for Astro 🧑‍🚀",
   "keywords": [
@@ -83,7 +83,7 @@
     "slash": "^5.1.0"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.0.0",
     "tsdown": "^0.22.4",
     "typescript": "^7.0.2"
   },
